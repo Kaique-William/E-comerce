@@ -11,16 +11,22 @@ export async function GET() {
   } catch (error) {
     if (error instanceof Error && error.message.includes("no such table")) {
       await db.exec(`
-        CREATE TABLE vendas (
+        CREATE TABLE Historico_vendas (
           id_vendas INTEGER PRIMARY KEY AUTOINCREMENT,
-          id_cliente INTEGER,
-          id_itens INTEGER,
-          quantidade_itens INTEGER,
-          quantidade_total INTEGER,
-          valor_unitario NUMERIC,
-          valor_total NUMERIC,
-          destino TEXT,
-          data_compra INTEGER
+          id_cliente INTEGER NOT NULL,
+          id_itens INTEGER NOT NULL,
+          destino TEXT NOT NULL,
+          quantidade_total INTEGER NOT NULL,
+          valor_total REAL NOT NULL,
+          quantidade_itens INTEGER NOT NULL,
+          valor_unitario REAL NOT NULL,
+          data_compra DATE NOT NULL,
+          data_pagamento DATE NOT NULL,
+          data_entrega DATE,
+          data_estimada_entrega DATE,
+
+          FOREIGN KEY (id_cliente) REFERENCES usuarios(id_usuario),
+          FOREIGN KEY (id_itens) REFERENCES produtos(id_produto)
         )
       `);
       return NextResponse.json([]);

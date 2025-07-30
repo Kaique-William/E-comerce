@@ -7,25 +7,21 @@ export async function GET() {
   // Tenta buscar dados da tabela 'usuarios'
   try {
     const usuarios = await db.all(
-      "SELECT id, nome, email, telefone, endereco, compras, itens, carrinho, cargo FROM usuarios"
+      "SELECT id_usuario, nome, email, senha, telefone, endereco, cargo FROM usuarios"
     );
     return NextResponse.json(usuarios);
   } catch (error) {
     // Se a tabela não existir, cria e retorna vazia
     if (error instanceof Error && error.message.includes("no such table")) {
       await db.exec(`
-        CREATE TABLE usuarios (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          nome TEXT,
-          email TEXT,
-          senha TEXT,
-          telefone TEXT,
-          endereco TEXT,
-          compras INTEGER,
-          itens INTEGER,
-          carrinho INTEGER,
-          cargo TEXT
-        )
+      CREATE TABLE Usuarios (
+        id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        senha TEXT NOT NULL,
+        telefone TEXT NOT NULL UNIQUE,
+        endereco TEXT,
+        cargo TEXT enum["ADM", "Cliente"] DEFAULT "Cliente")
       `);
       return NextResponse.json([]);
     }
@@ -45,16 +41,12 @@ export async function POST(req: NextRequest) {
     senha,
     telefone,
     endereco,
-    compras,
-    itens,
-    carrinho,
-    cargo,
   } = await req.json();
 
   try {
     await db.run(
-      "INSERT INTO usuarios (nome, email, senha, telefone, endereco, compras, itens, carrinho, cargo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [nome, email, senha, telefone, endereco, compras, itens, carrinho, cargo]
+      "INSERT INTO usuarios (nome, email, senha, telefone, endereco) VALUES (?, ?, ?, ?, ?)",
+      [nome, email, senha, telefone, endereco]
     );
 
     return NextResponse.json(

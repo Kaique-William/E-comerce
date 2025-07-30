@@ -6,10 +6,10 @@ export default function Header() {
         <input
           type="text"
           placeholder="Search"
-          className="bg-gray-700 p-2 rounded-full"
+          className="bg-gray-700 p-2 w-100 rounded-full placeholder:text-center"
         />
       </form>
-      <div className="bg-white p-5 rounded-full inline-block"></div>
+      <div className="bg-white p-5  rounded-full inline-block"></div>
     </header>
   );
 }

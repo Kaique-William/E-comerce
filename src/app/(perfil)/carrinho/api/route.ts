@@ -11,14 +11,17 @@ export async function GET() {
   } catch (error) {
     if (error instanceof Error && error.message.includes("no such table")) {
       await db.exec(`
-        CREATE TABLE carrinho (
+        CREATE TABLE Carrinho (
           id_carrinho INTEGER PRIMARY KEY AUTOINCREMENT,
-          id_cliente INTEGER,
-          id_item INTEGER,
-          nome_item TEXT,
-          valor NUMERIC
-        )
-      `);
+          id_cliente INTEGER NOT NULL,
+          id_item INTEGER NOT NULL,
+          nome_item TEXT NOT NULL,
+          quantidade INTEGER NOT NULL, valor real not null DEFAULT 0,
+
+          FOREIGN KEY (id_cliente) REFERENCES usuarios(id_usuario),
+          FOREIGN KEY (id_item) REFERENCES produtos(id_produto)
+          )
+        `);
       return NextResponse.json([]);
     }
     return NextResponse.json(

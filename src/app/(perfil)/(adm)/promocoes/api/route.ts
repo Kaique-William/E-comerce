@@ -11,14 +11,17 @@ export async function GET() {
   } catch (error) {
     if (error instanceof Error && error.message.includes("no such table")) {
       await db.exec(`
-        CREATE TABLE promocoes (
+        CREATE TABLE Promocoes (
           id_promocao INTEGER PRIMARY KEY AUTOINCREMENT,
-          tipo INTEGER,
-          titulo TEXT,
-          descricao TEXT,
-          id_item_principal INTEGER,
-          id_item_brinde INTEGER,
-          desconto NUMERIC
+          tipo INTEGER ENUM[1, 2, 3] NOT NULL,
+          titulo TEXT NOT NULL,
+          descricao TEXT NOT NULL,
+          id_item_principal INTEGER NOT NULL,
+          id_item_brinde INTEGER NOT NULL,
+          desconto REAL NOT NULL,
+
+          FOREIGN KEY (id_item_principal) REFERENCES produtos(id_produto),
+          FOREIGN KEY (id_item_brinde) REFERENCES produtos(id_produto)
         )
       `);
       return NextResponse.json([]);

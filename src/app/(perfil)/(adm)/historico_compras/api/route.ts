@@ -11,18 +11,20 @@ export async function GET() {
   } catch (error) {
     if (error instanceof Error && error.message.includes("no such table")) {
       await db.exec(`
-        CREATE TABLE historico_compras (
+        CREATE TABLE Pedido_estoque (
           id_compra INTEGER PRIMARY KEY AUTOINCREMENT,
-          id_produto INTEGER,
-          fornecedor TEXT,
-          quantidade_itens_pedidos INTEGER,
-          quantidade_itens_chegou INTEGER,
-          valor NUMERIC,
-          data_pedido INTEGER,
-          data_estimada_chegada INTEGER,
-          data_chegada INTEGER,
-          observacoes TEXT
-        )
+          id_produto INTEGER NOT NULL,
+          fornecedor TEXT NOT NULL,
+          quantidade_itens_pedidos INTEGER NOT NULL,
+          quantidade_itens_chegou INTEGER NOT NULL,
+          valor REAL NOT NULL,
+          data_pedido DATE NOT NULL,
+          data_estimada_chegada DATE,
+          data_chegada DATE,
+          observacoes TEXT DEFAULT "SEM OBSERCAÇÕES",
+
+          FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+        );
       `);
       return NextResponse.json([]);
     }

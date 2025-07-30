@@ -11,15 +11,14 @@ export async function GET() {
   } catch (error) {
     if (error instanceof Error && error.message.includes("no such table")) {
       await db.exec(`
-        CREATE TABLE produtos (
+        CREATE TABLE Produtos (
           id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
-          nome TEXT,
-          valor NUMERIC,
-          quantidade INTEGER,
-          quantidade_minima INTEGER,
-          data_ultima_remeca INTEGER,
-          quantidade_ultima_remeca INTEGER
-        )
+          nome TEXT NOT NULL,
+          valor REAL NOT NULL,
+          quantidade INTEGER NOT NULL,
+          quantidade_minima INTEGER NOT NULL,
+          data_ultima_remeca DATE,
+          quantidade_ultima_remeca INTEGER NOT NULL)
       `);
       return NextResponse.json([]);
     }

@@ -11,15 +11,22 @@ export async function GET() {
   } catch (error) {
     if (error instanceof Error && error.message.includes("no such table")) {
       await db.exec(`
-        CREATE TABLE compras (
-          id_compra INTEGER PRIMARY KEY AUTOINCREMENT,
-          id_item INTEGER,
-          nome_item TEXT,
-          id_pedido INTEGER,
-          data_compra INTEGER,
-          data_estimada_entrega INTEGER,
-          data_entrega INTEGER,
-          valor NUMERIC
+        CREATE TABLE Historico_vendas (
+          id_vendas INTEGER PRIMARY KEY AUTOINCREMENT,
+          id_cliente INTEGER NOT NULL,
+          id_itens INTEGER NOT NULL,
+          destino TEXT NOT NULL,
+          quantidade_total INTEGER NOT NULL,
+          valor_total REAL NOT NULL,
+          quantidade_itens INTEGER NOT NULL,
+          valor_unitario REAL NOT NULL,
+          data_compra DATE NOT NULL,
+          data_pagamento DATE NOT NULL,
+          data_entrega DATE,
+          data_estimada_entrega DATE,
+
+          FOREIGN KEY (id_cliente) REFERENCES usuarios(id_usuario),
+          FOREIGN KEY (id_itens) REFERENCES produtos(id_produto)
         )
       `);
       return NextResponse.json([]);
@@ -46,7 +53,15 @@ export async function POST(req: NextRequest) {
   try {
     await db.run(
       "INSERT INTO compras (id_item, nome_item, id_pedido, data_compra, data_estimada_entrega, data_entrega, valor) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [id_item, nome_item, id_pedido, data_compra, data_estimada_entrega, data_entrega, valor]
+      [
+        id_item,
+        nome_item,
+        id_pedido,
+        data_compra,
+        data_estimada_entrega,
+        data_entrega,
+        valor,
+      ]
     );
     return NextResponse.json(
       { message: "Compra criada com sucesso!" },
@@ -85,10 +100,7 @@ export async function PATCH(req: NextRequest) {
   values.push(id_compra);
 
   try {
-    await db.run(
-      `UPDATE compras SET ${setClause} WHERE id_compra = ?`,
-      values
-    );
+    await db.run(`UPDATE compras SET ${setClause} WHERE id_compra = ?`, values);
     return NextResponse.json(
       { message: "Compra atualizada com sucesso!" },
       { status: 200 }
