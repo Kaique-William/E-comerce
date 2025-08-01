@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function LinhaFuncoes() {
+export default function ClienteFuncoes() {
   return (
     <div className="bg-black text-white flex justify-between py-2 px-30 w-full">
       <Link

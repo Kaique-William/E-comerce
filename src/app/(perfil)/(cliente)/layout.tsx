@@ -1,13 +1,12 @@
-import LinhaFuncoes from "@/components/linhaFuncoes";
-
-export default function Layout({
+import ClienteFuncoes from "@/components/clienteFuncoes";
+export default function LayoutCliente({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <section>
-      <LinhaFuncoes />
+      <ClienteFuncoes/>
       {children}
     </section>
   );
