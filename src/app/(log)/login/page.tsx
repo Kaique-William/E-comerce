@@ -9,20 +9,23 @@ export default function Login() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+    
+    const res = await fetch("/login/api", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+    console.log("resposta", res)
 
-    const res = await fetch("/conta_cliente/api", { method: "GET" });
     const data = await res.json();
-
-    const usuario = data.find(
-      (u: { email: string; senha: string }) =>
-        u.email === email && u.senha === senha
-    );
-
-    if (usuario) {
+    if (data.token) {
       setMensagem("Login realizado com sucesso!");
-      // Aqui você pode redirecionar ou salvar o usuário logado
+      console.log("Token:", data.token);
+   
     } else {
-      setMensagem("Email ou senha inválidos.");
+      setMensagem(data.message || "Erro ao fazer login");
     }
   }
 
