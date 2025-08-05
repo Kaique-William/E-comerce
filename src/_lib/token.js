@@ -4,15 +4,17 @@ import { openDb } from "../db/confgDB";
 const SecretKey = process.env.JWT_SECRET || "UltraSecretKey";
 
 async function CreateToken(email){
-    const db = await openDb();
+    const db = await openDb(); // Inicia uma conexão com o banco
  
     try{
+        // Cria um novo token
         const token = jwt.sign({ email }, SecretKey, { 
             algorithm: "HS256",
             expiresIn: '12h' // Define a expiração em 12 horas  
         });
 
-        await db.run(`UPDATE Usuarios SET token = ? WHERE email = ?`, [token, email]);
+        // Salva o token de acesso junto ao usuario 
+        await db.run(`UPDATE Usuarios SET token = ? WHERE email = ?`, [token, email]); 
         return{token}
 
     } catch (error) {
