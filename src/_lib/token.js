@@ -1,24 +1,21 @@
 import jwt from 'jsonwebtoken';
+import { openDb } from "../db/confgDB";
 
 const SecretKey = process.env.JWT_SECRET || "UltraSecretKey";
 
 async function CreateToken(email){
-   
+    const db = await openDb(); // Inicia uma conexão com o banco
+ 
     try{
+        // Cria um novo token
         const token = jwt.sign({ email }, SecretKey, { 
             algorithm: "HS256",
             expiresIn: '12h' // Define a expiração em 12 horas  
         });
-        
-        const search = await db.query(`SELECT * FROM users WHERE email = ?`, [email]);
 
-        if(search.length > 1){
-            await db.query(`UPDATE users SET token = ? WHERE email = ?`, [token, email]);
-            return{message: "Login Sucess!", token: token}
-
-        } else {
-            return{message: "User not found"};
-        }
+        // Salva o token de acesso junto ao usuario 
+        await db.run(`UPDATE Usuarios SET token = ? WHERE email = ?`, [token, email]); 
+        return{token}
 
     } catch (error) {
         console.error("Error: ", error);
@@ -32,7 +29,7 @@ async function ValidateToken(token) {
         console.log("validar decoded", decoded)
 
         if(decoded){
-             const search = await db.query(`SELECT * FROM users WHERE token = ?`, [token]);
+             const search = await db.query(`SELECT * FROM Usuarios WHERE token = ?`, [token]);
 
             if (search.length > 0) {
                 return { isValid: true, user: search[0] };

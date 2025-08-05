@@ -15,11 +15,11 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, senha }),
     });
-    console.log("resposta", res)
 
     const data = await res.json();
+    console.log(data)
     if (data.token) {
       setMensagem("Login realizado com sucesso!");
       console.log("Token:", data.token);
