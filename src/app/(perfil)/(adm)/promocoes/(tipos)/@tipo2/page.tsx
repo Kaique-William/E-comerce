@@ -19,9 +19,7 @@ export default function Tipo2() {
       </div>
 
       {/* Itens da promoção */}
-      <h2 className="text-center text-xl font-medium mb-4">
-        Item principal
-      </h2>
+      <h2 className="text-center text-xl font-medium mb-4">Item principal</h2>
       <div className="bg-gray-300 p-6 mb-8 rounded">
         <div className="flex justify-center mb-4">
           <input
@@ -47,14 +45,16 @@ export default function Tipo2() {
       </div>
       <div className="ml-8 mt-2 flex gap-2 items-center">
         <span className="text-gray-700">valor da promoção</span>
-        <input
-          type="number"
-          className="bg-gray-300 px-2 py-1 rounded w-20 text-center outline-none
-                        [&::-webkit-outer-spin-button]:appearance-none
-                        [&::-webkit-inner-spin-button]:appearance-none
-                        [appearance:textfield]"
-          min={0}
-        />
+        <form action="">
+          <input
+            type="number"
+            className="bg-gray-300 px-2 py-1 rounded w-20 text-center outline-none
+          [&::-webkit-outer-spin-button]:appearance-none
+          [&::-webkit-inner-spin-button]:appearance-none
+          [appearance:textfield]"
+            min={0}
+          />
+        </form>
       </div>
     </div>
   );

@@ -6,9 +6,9 @@ export default function LayoutAdm({
   children: React.ReactNode;
 }>) {
   return (
-    <section>
+    <>
       <AdmFuncoes />
-      {children}
-    </section>
+      <main>{children}</main>
+    </>
   );
 }

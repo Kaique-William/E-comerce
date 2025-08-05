@@ -1,22 +1,70 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+interface Produto {
+  id: number;
+  nome: string;
+  valor: number;
+  quantidade: number;
+  quantidade_minima: number;
+  data_ultima_remeca: string;
+  quantidade_ultima_remeca: number;
+}
+
 export default function Produtos() {
-    return (
-        <div className="w-full h-screen flex">
-            {/* Sidebar de categorias */}
-            <div className="h-full w-[350px] flex flex-col items-center justify-center bg-gray-500">
-                <h1 className="text-white text-3xl">categorias</h1>
-            </div>
-            {/* Conteúdo principal */}
-            <div className="flex-1 flex flex-col items-center pt-12">
-                {/* Barra de pesquisa */}
-                <div className="w-[600px] bg-gray-200 text-center py-2 mb-12">
-                    pesquisa de itens
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [selecionado, setSelecionado] = useState<Produto | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("/produtos/api");
+      const data = await response.json();
+      console.log(data);
+      setProdutos(data);
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <div className="w-full h-screen flex">
+      {/* Sidebar de categorias */}
+      <aside className="w-2xs flex flex-col items-center justify-center bg-gray-500">
+        <h1 className="text-white text-3xl">categorias</h1>
+      </aside>
+      {/* Conteúdo principal */}
+      <main className="flex-1 flex flex-col items-center pt-12">
+        {/* Lista de itens */}
+        <div className="w-[96%] flex flex-col items-center border-b">
+          {produtos.map((item) => (
+            <div key={item.id} className="flex items-center w-full py-8 gap-7">
+              <div className="w-24 h-24 bg-gray-200 flex items-center justify-center text-xs">
+                foto do item
+              </div>
+              <div className="w-full">
+                <div className="flex justify-between w-full">
+                <h1>{item.nome}</h1>
+                <h1>codigo do item</h1>
+                <h1>R${item.valor}</h1>
                 </div>
-                {/* Lista de itens */}
-                <div className="w-full max-w-3xl flex flex-col items-center">
-                    <div className="text-4xl mb-8">item</div>
-                    <hr className="w-full mb-8" />
+                <div className="flex items-center justify-between gap-4 mt-4">
+                <h1>{item.quantidade}</h1>
+                <h1>{item.quantidade_minima}</h1>
+                <h1>{item.data_ultima_remeca}</h1>
+                <h1>{item.quantidade_ultima_remeca}</h1>
                 </div>
+              </div>
             </div>
+          ))}
+          <Link href="/perfil/adm/produtos/editar">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">editar</button>
+          </Link>
         </div>
-    )
+      </main>
+      <Link href="/produtos/adicionar">
+        <button className="fixed bottom-4 right-4">adicionar</button>
+      </Link>
+    </div>
+  );
 }
