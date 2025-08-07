@@ -14,14 +14,14 @@ export default function Adicionar() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("Adicionar produto:", {
-      nome,
-      valor,
-      quantidade,
-      quantidade_minima,
-      data_ultima_remeca: dataUltimaRemeca,
-      quantidade_ultima_remeca,
-    });
+    // console.log("Adicionar produto:", {
+    //   nome,
+    //   valor,
+    //   quantidade,
+    //   quantidade_minima,
+    //   data_ultima_remeca: dataUltimaRemeca,
+    //   quantidade_ultima_remeca,
+    // });
 
     const res = await fetch("/produtos/api", {
       method: "POST",
@@ -38,7 +38,7 @@ export default function Adicionar() {
       }),
     });
 
-    console.log("Resposta do servidor:", res);
+    // console.log("Resposta do servidor:", res);
 
     if (res.ok) {
       alert("Produto adicionado com sucesso!");

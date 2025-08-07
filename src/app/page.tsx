@@ -1,5 +1,6 @@
-import Promocoes from "@/components/promocoes";
 import { openDb } from "../db/confgDB.js";
+import Promocoes from "@/components/home/promocoes";
+import ListaProdutos from "@/components/home/listaProdutos";
 
 openDb();
 export default async function Home() {
@@ -8,14 +9,7 @@ export default async function Home() {
       <Promocoes />
       <div className="text-center p-4">
         <h1>produtos</h1>
-        <div className="flex justify-between">
-          <div className="w-40 h-40 bg-amber-200"></div>
-          <div className="w-40 h-40 bg-amber-200"></div>
-          <div className="w-40 h-40 bg-amber-200"></div>
-          <div className="w-40 h-40 bg-amber-200"></div>
-          <div className="w-40 h-40 bg-amber-200"></div>
-          <div className="w-40 h-40 bg-amber-200"></div>
-        </div>
+        <ListaProdutos />
       </div>
     </main>
   );

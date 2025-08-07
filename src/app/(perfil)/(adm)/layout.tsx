@@ -1,4 +1,4 @@
-import AdmFuncoes from "@/components/admFuncoes";
+import AdmFuncoes from "@/components/linhaFuncoes/admFuncoes";
 
 export default function LayoutAdm({
   children,
