@@ -15,7 +15,7 @@ async function CreateToken(email){
 
         // Salva o token de acesso junto ao usuario 
         await db.run(`UPDATE Usuarios SET token = ? WHERE email = ?`, [token, email]); 
-        return{token}
+        return token;
 
     } catch (error) {
         console.error("Error: ", error);

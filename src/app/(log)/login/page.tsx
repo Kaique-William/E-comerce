@@ -22,13 +22,23 @@ export default function Login() {
     });
 
     const data = await res.json();
-    console.log(data);
+  
     if (data.token) {
       setMensagem("Login realizado com sucesso!");
+
+      if(data.cargoUser === "Cliente"){
+        router.push("/"); //corrigir path
+      } else if(data.cargoUser === "ADM") {
+        router.push("/admin"); // corrigir path
+      };
+
+      localStorage.setItem("User", data.user);
+      localStorage.setItem("Token", data.token);
+      
       // console.log("Token:", data.token);
-      setTimeout(() => {
-        router.push("/conta_cliente");
-      }, 2000);
+      // setTimeout(() => {
+      //   router.push("/conta_cliente");
+      // }, 2000);
     } else {
       setMensagem(data.message || "Erro ao fazer login");
     }

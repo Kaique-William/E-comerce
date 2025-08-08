@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       if(user.email === email && user.senha === senha){
         const token = await CreateToken(user); // Gera o token de acesso
     
-        return NextResponse.json({ message: "Usuario Autenticado!", token:token }, { status: 200 });
+        return NextResponse.json({ message: "Usuario Autenticado!", token:token, cargoUser: user.cargo, user: user.nome }, { status: 200 });
 
       } else {
         return NextResponse.json({ message: "Credenciais inválidas!" }, { status:401 });
