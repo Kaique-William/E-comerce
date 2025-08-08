@@ -1,29 +1,34 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
 
+  const router = useRouter();
+
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    
+
     const res = await fetch("/login/api", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, senha }),
     });
-    console.log("resposta", res)
 
     const data = await res.json();
+    console.log(data);
     if (data.token) {
       setMensagem("Login realizado com sucesso!");
-      console.log("Token:", data.token);
-   
+      // console.log("Token:", data.token);
+      setTimeout(() => {
+        router.push("/conta_cliente");
+      }, 2000);
     } else {
       setMensagem(data.message || "Erro ao fazer login");
     }

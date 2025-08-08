@@ -1,4 +1,4 @@
-import AdmFuncoes from "@/components/admFuncoes";
+import AdmFuncoes from "@/components/linhaFuncoes/admFuncoes";
 
 export default function LayoutAdm({
   children,
@@ -6,9 +6,9 @@ export default function LayoutAdm({
   children: React.ReactNode;
 }>) {
   return (
-    <section>
+    <>
       <AdmFuncoes />
-      {children}
-    </section>
+      <main>{children}</main>
+    </>
   );
 }

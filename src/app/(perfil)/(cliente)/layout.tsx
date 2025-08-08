@@ -1,4 +1,4 @@
-import ClienteFuncoes from "@/components/clienteFuncoes";
+import ClienteFuncoes from "@/components/linhaFuncoes/clienteFuncoes";
 export default function LayoutCliente({
   children,
 }: Readonly<{
