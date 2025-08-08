@@ -29,7 +29,7 @@ export default function Login() {
       if(data.cargoUser === "Cliente"){
         router.push("/"); //corrigir path
       } else if(data.cargoUser === "ADM") {
-        router.push("/admin"); // corrigir path
+        router.push("/vendas"); // corrigir path
       };
 
       localStorage.setItem("User", data.user);

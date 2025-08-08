@@ -13,10 +13,8 @@ async function CreateToken(email){
             expiresIn: '12h' // Define a expiração em 12 horas  
         });
 
-        // Salva o token de acesso junto ao usuario 
-        await db.run(`UPDATE Usuarios SET token = ? WHERE email = ?`, [token, email]); 
         return token;
-
+     
     } catch (error) {
         console.error("Error: ", error);
     }
