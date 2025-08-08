@@ -14,10 +14,8 @@ interface Item {
 
 export default function Editar() {
   const searchParams = useSearchParams();
-  const id_produto = searchParams.get("id_produto");
+  const id_produto = searchParams.get("id");
   const [item, setItem] = useState<Item | null>(null);
-
-  console.log(id_produto);
 
   useEffect(() => {
     if (!id_produto) return;
@@ -41,7 +39,7 @@ export default function Editar() {
     });
   };
 
-  console.log(item);
+  console.log("item", item);
   
   return (
     <div>

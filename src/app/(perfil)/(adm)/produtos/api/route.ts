@@ -117,3 +117,40 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
+
+
+export async function GETBYID(req: NextRequest) {
+  const db = await openDb();
+  const { searchParams } = new URL(req.url);
+
+  const id_produto = searchParams.get('id_produto');
+
+  if (!id_produto) {
+    return NextResponse.json(
+      { error: "ID do produto é obrigatório" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const produto = await db.get(
+      "SELECT id_produto, nome, valor, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca FROM produtos WHERE id_produto = ?",
+      [id_produto]
+    );
+
+    if (!produto) {
+      return NextResponse.json(
+        { error: "Produto não encontrado" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(produto);
+  } catch (error) {
+    console.error("Erro ao buscar produto:", error);
+    return NextResponse.json(
+      { error: "Erro ao buscar produto" },
+      { status: 500 }
+    );
+  }
+}
