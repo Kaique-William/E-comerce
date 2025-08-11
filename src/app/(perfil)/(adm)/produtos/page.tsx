@@ -98,25 +98,31 @@ export default function Produtos() {
                           onChange={handleChange}
                           className="border px-2"
                         />
-                        <span className="text-sm text-gray-500">código do item</span>
+                        <input
+                          name="data_ultima_remeca"
+                          value={produtoEditado?.data_ultima_remeca || ""}
+                          onChange={handleChange}
+                          className="border px-2"
+                          type="date"
+                        />
                         <input
                           name="valor"
                           value={produtoEditado?.valor || ""}
                           onChange={handleChange}
-                          className="border px-2 w-24"
+                          className="border px-2 w-40"
                           type="number"
                         />
                       </>
                     ) : (
                       <>
                         <h1>{item.nome}</h1>
-                        <h1>código do item</h1>
+                        <h1>{item.data_ultima_remeca}</h1>
                         <h1>R${item.valor}</h1>
                       </>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between gap-4 mt-4">
+                  <div className="flex items-center justify-between mt-4">
                     {isEditando ? (
                       <>
                         <input
@@ -134,13 +140,6 @@ export default function Produtos() {
                           type="number"
                         />
                         <input
-                          name="data_ultima_remeca"
-                          value={produtoEditado?.data_ultima_remeca || ""}
-                          onChange={handleChange}
-                          className="border px-2"
-                          type="date"
-                        />
-                        <input
                           name="quantidade_ultima_remeca"
                           value={produtoEditado?.quantidade_ultima_remeca || ""}
                           onChange={handleChange}
@@ -152,7 +151,6 @@ export default function Produtos() {
                       <>
                         <h1>{item.quantidade}</h1>
                         <h1>{item.quantidade_minima}</h1>
-                        <h1>{item.data_ultima_remeca}</h1>
                         <h1>{item.quantidade_ultima_remeca}</h1>
                       </>
                     )}

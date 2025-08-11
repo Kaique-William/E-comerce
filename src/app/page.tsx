@@ -8,7 +8,6 @@ export default async function Home() {
     <main>
       <Promocoes />
       <div className="text-center p-4">
-        <h1>produtos</h1>
         <ListaProdutos />
       </div>
     </main>

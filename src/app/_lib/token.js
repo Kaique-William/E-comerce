@@ -1,10 +1,8 @@
 import jwt from 'jsonwebtoken';
-import { openDb } from "../db/confgDB";
 
 const SecretKey = process.env.JWT_SECRET || "UltraSecretKey";
 
 async function CreateToken(email){
-    const db = await openDb(); // Inicia uma conexão com o banco
  
     try{
         // Cria um novo token
@@ -24,7 +22,7 @@ async function ValidateToken(token) {
     try {
        
         const decoded = jwt.verify(token, SecretKey);
-        console.log("validar decoded", decoded)
+        // console.log("validar decoded", decoded)
 
         if(decoded){
              const search = await db.query(`SELECT * FROM Usuarios WHERE token = ?`, [token]);

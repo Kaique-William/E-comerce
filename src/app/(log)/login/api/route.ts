@@ -1,6 +1,6 @@
 import { openDb } from "../../../../db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
-import { CreateToken } from "../../../../_lib/token";
+import { CreateToken } from "../../../_lib/token";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const db = await openDb(); // Inicia a conexão com o banco
