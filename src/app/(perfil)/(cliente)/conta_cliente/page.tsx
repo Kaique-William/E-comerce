@@ -51,11 +51,10 @@ export default function Conta_cliente() {
               onClick={
                 isEditing ? () => setIsEditing(false) : () => setIsEditing(true)
               }
-              className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                isEditing
+              className={`px-4 py-2 rounded-md font-medium transition-colors ${isEditing
                   ? "bg-green-600 text-white hover:bg-green-700"
                   : "bg-blue-600 text-white hover:bg-blue-700"
-              }`}
+                }`}
             >
               {isEditing ? "Salvar" : "Editar"}
             </button>
@@ -284,54 +283,52 @@ export default function Conta_cliente() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    CEP
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={cliente.endereco.cep}
-                      onChange={(e) =>
-                        setCliente({
-                          ...cliente,
-                          endereco: {
-                            ...cliente.endereco,
-                            cep: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{cliente.endereco.cep}</p>
-                  )}
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bairro
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={cliente.endereco.bairro}
+                    onChange={(e) =>
+                      setCliente({
+                        ...cliente,
+                        endereco: {
+                          ...cliente.endereco,
+                          bairro: e.target.value,
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : (
+                  <p className="text-gray-900">{cliente.endereco.bairro}</p>
+                )}
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    CPF
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={cliente.endereco.cep}
-                      onChange={(e) =>
-                        setCliente({
-                          ...cliente,
-                          endereco: {
-                            ...cliente.endereco,
-                            cep: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{cliente.endereco.cep}</p>
-                  )}
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  CEP
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={cliente.endereco.cep}
+                    onChange={(e) =>
+                      setCliente({
+                        ...cliente,
+                        endereco: {
+                          ...cliente.endereco,
+                          cep: e.target.value,
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : (
+                  <p className="text-gray-900">{cliente.endereco.cep}</p>
+                )}
               </div>
             </div>
             <div>
