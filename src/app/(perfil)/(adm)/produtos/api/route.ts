@@ -40,10 +40,13 @@ export async function POST(req: NextRequest) {
     quantidade_ultima_remeca,
   } = await req.json();
 
+  // Converte valor string com vírgula para número float com ponto
+  const valorConvertido = typeof valor === "string" ? parseFloat(valor.replace(",", ".")) : valor;
+
   try {
     await db.run(
       "INSERT INTO produtos (nome, valor, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca) VALUES (?, ?, ?, ?, ?, ?)",
-      [nome, valor, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca]
+      [nome, valorConvertido, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca]
     );
     return NextResponse.json(
       { message: "Produto criado com sucesso!" },
@@ -79,7 +82,12 @@ export async function PATCH(req: NextRequest) {
   }
 
   const setClause = keys.map((key) => `${key} = ?`).join(", ");
-  const values = keys.map((key) => campos[key]);
+  const values = keys.map((key) => {
+    if (key === 'valor' && typeof campos[key] === "string") {
+      return parseFloat(campos[key].replace(",", "."));
+    }
+    return campos[key];
+  });
   values.push(id_produto);
 
   try {
