@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Adicionar() {
   const [nome, setNome] = useState("");
@@ -16,6 +17,8 @@ export default function Adicionar() {
   const [dataUltimaRemeca, setDataUltimaRemeca] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const resetForm = () => {
@@ -50,9 +53,11 @@ export default function Adicionar() {
       if (res.ok) {
         alert("Produto adicionado com sucesso!");
         resetForm();
+        router.push("/produtos")
       } else {
         const data = await res.json();
         alert(data.error || "Erro ao adicionar produto.");
+        
       }
     } catch (error) {
       alert("Erro de conexão. Tente novamente.");
