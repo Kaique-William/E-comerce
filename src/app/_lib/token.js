@@ -19,25 +19,13 @@ async function CreateToken(email){
 }
 
 async function ValidateToken(token) {
-    try {
-       
-        const decoded = jwt.verify(token, SecretKey);
-        // console.log("validar decoded", decoded)
-
-        if(decoded){
-             const search = await db.query(`SELECT * FROM Usuarios WHERE token = ?`, [token]);
-
-            if (search.length > 0) {
-                return { isValid: true, user: search[0] };
-            } else {
-                return { isValid: false, message: "Usuário não encontrado" };
-            }
-
-        }
+  try {
     
-    } catch (error) {
-        return { isValid: false, message: error.message };
-    }
+    const decoded = jwt.verify(token, SecretKey);
+    return { isValid: true, decoded }; 
+  } catch (error) {
+    return { isValid: false, message: error.message };
+  }
 }
 
 export { CreateToken, ValidateToken };

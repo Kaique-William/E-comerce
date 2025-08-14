@@ -15,30 +15,25 @@ export default function Login() {
 
     const res = await fetch("/login/api", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, senha }),
     });
 
     const data = await res.json();
-  
+
     if (data.token) {
       setMensagem("Login realizado com sucesso!");
 
-      if(data.cargoUser === "Cliente"){
-        router.push("/"); //corrigir path
-      } else if(data.cargoUser === "ADM") {
-        router.push("/vendas"); // corrigir path
-      };
-
-      localStorage.setItem("User", data.user);
+      // Salva token e usuário no localStorage
       localStorage.setItem("Token", data.token);
-      
-      // console.log("Token:", data.token);
-      // setTimeout(() => {
-      //   router.push("/conta_cliente");
-      // }, 2000);
+      localStorage.setItem("User", JSON.stringify(data.user));
+
+      // Redireciona conforme cargo
+      if (data.cargoUser === "Cliente") {
+        router.push("/"); 
+      } else if (data.cargoUser === "ADM") {
+        router.push("/vendas"); 
+      }
     } else {
       setMensagem(data.message || "Erro ao fazer login");
     }
@@ -71,9 +66,9 @@ export default function Login() {
           Entrar
         </button>
 
-        <p className="mt-4 text-center">Não tem uma conta? </p>
+        <p className="mt-4 text-center">Não tem uma conta?</p>
 
-        <Link href="/criar_conta" passHref>
+        <Link href="/criar_conta">
           <button
             type="button"
             className="bg-blue-500 text-black px-4 py-2 mt-4 rounded w-auto"
