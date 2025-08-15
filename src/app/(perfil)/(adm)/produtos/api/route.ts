@@ -5,7 +5,10 @@ export async function GET() {
   const db = await openDb();
   try {
     const produtos = await db.all(
-      "SELECT id_produto, nome, valor, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca FROM produtos"
+      `SELECT id_produto, nome, valor, quantidade, quantidade_minima,
+              data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo,
+              color, marca, tamanho, descricao
+       FROM Produtos`
     );
     return NextResponse.json(produtos);
   } catch (error) {
@@ -18,7 +21,14 @@ export async function GET() {
           quantidade INTEGER NOT NULL,
           quantidade_minima INTEGER NOT NULL,
           data_ultima_remeca DATE,
-          quantidade_ultima_remeca INTEGER NOT NULL)
+          quantidade_ultima_remeca INTEGER NOT NULL,
+          categoria TEXT,
+          tipo TEXT,
+          color TEXT,
+          marca TEXT,
+          tamanho TEXT,
+          descricao TEXT
+        )
       `);
       return NextResponse.json([]);
     }
@@ -38,25 +48,43 @@ export async function POST(req: NextRequest) {
     quantidade_minima,
     data_ultima_remeca,
     quantidade_ultima_remeca,
+    categoria,
+    tipo,
+    color,
+    marca,
+    tamanho,
+    descricao,
   } = await req.json();
 
-  // Converte valor string com vírgula para número float com ponto
-  const valorConvertido = typeof valor === "string" ? parseFloat(valor.replace(",", ".")) : valor;
+  const valorConvertido =
+    typeof valor === "string" ? parseFloat(valor.replace(",", ".")) : valor;
 
   try {
     await db.run(
-      "INSERT INTO produtos (nome, valor, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca) VALUES (?, ?, ?, ?, ?, ?)",
-      [nome, valorConvertido, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca]
+      `INSERT INTO Produtos (nome, valor, quantidade, quantidade_minima,
+        data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo, color,
+        marca, tamanho, descricao)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        nome,
+        valorConvertido,
+        quantidade,
+        quantidade_minima,
+        data_ultima_remeca,
+        quantidade_ultima_remeca,
+        categoria,
+        tipo,
+        color,
+        marca,
+        tamanho,
+        descricao,
+      ]
     );
-    return NextResponse.json(
-      { message: "Produto criado com sucesso!" },
-      { status: 201 }
-    );
+    return NextResponse.json({ message: "Produto adicionado com sucesso" });
   } catch (error) {
-    console.error("Erro ao criar produto:", error);
     return NextResponse.json(
-      { error: "erro ao criar produto" },
-      { status: 409 }
+      { error: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
     );
   }
 }
@@ -83,7 +111,7 @@ export async function PATCH(req: NextRequest) {
 
   const setClause = keys.map((key) => `${key} = ?`).join(", ");
   const values = keys.map((key) => {
-    if (key === 'valor' && typeof campos[key] === "string") {
+    if (key === "valor" && typeof campos[key] === "string") {
       return parseFloat(campos[key].replace(",", "."));
     }
     return campos[key];
@@ -126,12 +154,11 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-
 export async function GETBYID(req: NextRequest) {
   const db = await openDb();
   const { searchParams } = new URL(req.url);
 
-  const id_produto = searchParams.get('id_produto');
+  const id_produto = searchParams.get("id_produto");
 
   if (!id_produto) {
     return NextResponse.json(
@@ -142,7 +169,7 @@ export async function GETBYID(req: NextRequest) {
 
   try {
     const produto = await db.get(
-      "SELECT id_produto, nome, valor, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca FROM produtos WHERE id_produto = ?",
+      "SELECT id_produto, nome, valor, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo, cor, marca, tamanho, descricao FROM produtos WHERE id_produto = ?",
       [id_produto]
     );
 

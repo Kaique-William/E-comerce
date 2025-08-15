@@ -18,7 +18,7 @@ export default function Adicionar() {
     new Date().toISOString().split("T")[0]
   );
 
-   const router = useRouter();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const resetForm = () => {
@@ -47,17 +47,22 @@ export default function Adicionar() {
           quantidade_minima: parseInt(quantidade_minima) || 0,
           data_ultima_remeca: dataUltimaRemeca,
           quantidade_ultima_remeca: parseInt(quantidade_ultima_remeca) || 0,
+          categoria: categoria.trim(),
+          tipo: tipo.trim(),
+          color: cor.trim(),
+          marca: marca.trim(),
+          tamanho: tamanho.trim(),
+          descricao: descricao.trim(),
         }),
       });
 
       if (res.ok) {
         alert("Produto adicionado com sucesso!");
         resetForm();
-        router.push("/produtos")
+        router.push("/produtos");
       } else {
         const data = await res.json();
         alert(data.error || "Erro ao adicionar produto.");
-        
       }
     } catch (error) {
       alert("Erro de conexão. Tente novamente.");
@@ -73,7 +78,7 @@ export default function Adicionar() {
           Adicionar Novo Produto
         </h1>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className=" bg-white rounded-lg shadow-md p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Upload de Imagem */}
             <div>
@@ -122,102 +127,189 @@ export default function Adicionar() {
             </div>
 
             {/* Seção de Categoria */}
-            <div >
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Categoria e Detalhes</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Categoria *
-                  </label>
-                  <select
-                    value={categoria}
-                    onChange={(e) => setCategoria(e.target.value)}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Selecione uma categoria</option>
-                    <option value="Mascoulino">Mascolino</option>
-                    <option value="Femilino">Feminino</option>
-                    <option value="Unisex">Unisex</option>
-                  </select>
-                </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Categoria e Detalhes
+            </h3>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Tipo *
-                  </label>
-                  <select
-                    value={categoria}
-                    onChange={(e) => setCategoria(e.target.value)}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Selecione uma categoria</option>
-                    <option value="Camis">Mascolino</option>
-                    <option value="Femilino">Feminino</option>
-                    <option value="Unisex">Unisex</option>
-                  </select>
-                </div>
-
-                
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Categoria *
+                </label>
+                <select
+                  value={categoria}
+                  onChange={(e) => setCategoria(e.target.value)}
+                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Selecione uma categoria</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Feminino">Feminino</option>
+                  <option value="Unisex">Unisex</option>
+                </select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Cor
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ex: Preto, Azul, Vermelho"
-                    value={cor}
-                    onChange={(e) => setCor(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Marca
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ex: Nike, Samsung, Apple"
-                    value={marca}
-                    onChange={(e) => setMarca(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Tamanho
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ex: P, M, G, 42, Único"
-                    value={tamanho}
-                    onChange={(e) => setTamanho(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Descrição
-                  </label>
-                  <textarea
-                    placeholder="Descrição detalhada do produto"
-                    value={descricao}
-                    onChange={(e) => setDescricao(e.target.value)}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo *
+                </label>
+                <select
+                  value={tipo}
+                  onChange={(e) => setTipo(e.target.value)}
+                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Selecione um tipo</option>
+                  <option value="Camisa">Camisa</option>
+                  <option value="Calça">Calça</option>
+                  <option value="Calçados">Calçados</option>
+                  <option value="Vestido">Vestido</option>
+                  <option value="Saia">Saia</option>
+                  <option value="Bermuda">Bermuda</option>
+                  <option value="Jaqueta">Jaqueta</option>
+                  <option value="Blusa">Blusa</option>
+                  <option value="Shorts">Shorts</option>
+                  <option value="Intimo">Intimo</option>
+                  <option value="Outros">Outros</option>
+                </select>
               </div>
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Cor
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: Preto, Azul, Vermelho"
+                  value={cor}
+                  onChange={(e) => setCor(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Marca
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: Nike, Adidas, Puma"
+                  value={marca}
+                  onChange={(e) => setMarca(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tamanho
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: P, M, G, 42, Único"
+                  value={tamanho}
+                  onChange={(e) => setTamanho(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição
+                </label>
+                <textarea
+                  placeholder="Descrição detalhada do produto"
+                  value={descricao}
+                  onChange={(e) => setDescricao(e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              {/* Quantidade em Estoque */}
+              <div>
+                <label
+                  htmlFor="quantidade"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Quantidade em Estoque *
+                </label>
+                <input
+                  id="quantidade"
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={quantidade}
+                  onChange={(e) => setQuantidade(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              {/* Quantidade Mínima */}
+              <div>
+                <label
+                  htmlFor="quantidade_minima"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Quantidade Mínima *
+                </label>
+                <input
+                  id="quantidade_minima"
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={quantidade_minima}
+                  onChange={(e) => setQuantidade_minima(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              {/* Data da Última Remessa */}
+              <div>
+                <label
+                  htmlFor="dataUltimaRemeca"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Data da Última Remessa
+                </label>
+                <input
+                  id="dataUltimaRemeca"
+                  type="date"
+                  value={dataUltimaRemeca}
+                  onChange={(e) => setDataUltimaRemeca(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Quantidade da Última Remessa */}
+              <div>
+                <label
+                  htmlFor="quantidade_ultima_remeca"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Quantidade da Última Remessa
+                </label>
+                <input
+                  id="quantidade_ultima_remeca"
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={quantidade_ultima_remeca}
+                  onChange={(e) => setQuantidade_ultima_remeca(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            
             {/* Valor */}
             <div>
               <label
@@ -234,84 +326,8 @@ export default function Adicionar() {
                 placeholder="0,00"
                 value={valor}
                 onChange={(e) => setValor(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-[40%] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
-              />
-            </div>
-
-            {/* Quantidade em Estoque */}
-            <div>
-              <label
-                htmlFor="quantidade"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Quantidade em Estoque *
-              </label>
-              <input
-                id="quantidade"
-                type="number"
-                min="0"
-                placeholder="0"
-                value={quantidade}
-                onChange={(e) => setQuantidade(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              />
-            </div>
-
-            {/* Quantidade Mínima */}
-            <div>
-              <label
-                htmlFor="quantidade_minima"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Quantidade Mínima *
-              </label>
-              <input
-                id="quantidade_minima"
-                type="number"
-                min="0"
-                placeholder="0"
-                value={quantidade_minima}
-                onChange={(e) => setQuantidade_minima(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              />
-            </div>
-
-            {/* Data da Última Remessa */}
-            <div>
-              <label
-                htmlFor="dataUltimaRemeca"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Data da Última Remessa
-              </label>
-              <input
-                id="dataUltimaRemeca"
-                type="date"
-                value={dataUltimaRemeca}
-                onChange={(e) => setDataUltimaRemeca(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Quantidade da Última Remessa */}
-            <div>
-              <label
-                htmlFor="quantidade_ultima_remeca"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Quantidade da Última Remessa
-              </label>
-              <input
-                id="quantidade_ultima_remeca"
-                type="number"
-                min="0"
-                placeholder="0"
-                value={quantidade_ultima_remeca}
-                onChange={(e) => setQuantidade_ultima_remeca(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
