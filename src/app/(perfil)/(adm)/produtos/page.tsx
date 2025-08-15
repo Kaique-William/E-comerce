@@ -167,11 +167,23 @@ export default function Produtos() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="bg-white ">
+                  <tbody className="bg-gray-100 ">
                     {produtos.map((item) => {
                       const isEditando = editandoId === item.id_produto;
                       const inputClass =
                         "border px-2 py-1 rounded text-sm w-full max-w-[120px]";
+                      const fields: (keyof Produto)[] = [
+                        "nome",
+                        "marca",
+                        "tipo",
+                        "tamanho",
+                        "categoria",
+                        "color",
+                        "valor",
+                        "quantidade",
+                        "quantidade_minima",
+                      ];
+
                       return (
                         <tr
                           key={item.id_produto}
@@ -181,25 +193,16 @@ export default function Produtos() {
                             <div className="flex flex-col gap-2">
                               {/* Informações principais */}
                               <div className="grid grid-cols-10 gap-2">
-                                {[
-                                  "nome",
-                                  "marca",
-                                  "tipo",
-                                  "tamanho",
-                                  "categoria",
-                                  "color",
-                                  "valor",
-                                  "quantidade",
-                                  "quantidade_minima",
-                                ].map((field) => (
+                                {fields.map((field) => (
                                   <div key={field} className="text-sm">
                                     {isEditando ? (
                                       field === "tipo" ? (
                                         <select
                                           name={field}
                                           value={
-                                            (produtoEditado as any)?.[field] ||
-                                            ""
+                                            produtoEditado
+                                              ? produtoEditado[field]
+                                              : ""
                                           }
                                           onChange={handleChange}
                                           className={inputClass}
@@ -224,8 +227,9 @@ export default function Produtos() {
                                         <select
                                           name={field}
                                           value={
-                                            (produtoEditado as Produto)?.[field] ||
-                                            ""
+                                            produtoEditado
+                                              ? produtoEditado[field]
+                                              : ""
                                           }
                                           onChange={handleChange}
                                           className={inputClass}
@@ -251,8 +255,9 @@ export default function Produtos() {
                                               : "text"
                                           }
                                           value={
-                                            (produtoEditado as any)?.[field] ||
-                                            ""
+                                            produtoEditado
+                                              ? produtoEditado[field]
+                                              : ""
                                           }
                                           onChange={handleChange}
                                           className={inputClass}
@@ -261,17 +266,18 @@ export default function Produtos() {
                                     ) : field === "valor" ? (
                                       `R$ ${item.valor.toFixed(2)}`
                                     ) : (
-                                      (item as any)[field]
+                                      item[field]
                                     )}
                                   </div>
                                 ))}
+
                                 {/* Ações */}
                                 <div className="text-sm">
                                   {isEditando ? (
                                     <>
                                       <button
                                         onClick={handleConfirmar}
-                                        className="text-green-600 hover:text-green-900 mr-2"
+                                        className="text-green-600 hover:text-green-900 mx-4"
                                       >
                                         ✓
                                       </button>
@@ -303,8 +309,8 @@ export default function Produtos() {
                                 </div>
                               </div>
 
-                              {/* Divisor */}
-                              <div className="mt-2 pt-2">
+                              {/* Divisor e descrição */}
+                              <div className="border-t border-gray-200 mt-2 pt-2">
                                 <strong>Descrição:</strong>{" "}
                                 {isEditando ? (
                                   <textarea
