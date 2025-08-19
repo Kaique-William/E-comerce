@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -24,9 +25,14 @@ export default function Login() {
     if (data.token) {
       setMensagem("Login realizado com sucesso!");
 
-      // Salva token e usuário no localStorage
-      localStorage.setItem("Token", data.token);
-      localStorage.setItem("User", JSON.stringify(data.user));
+      // Salva token e usuário nos coooookies
+      Cookies.set("Token", data.token, { expires: 1, secure: true, sameSite: "strict" });
+
+      const userValue = typeof data.user === "string" ? data.user : JSON.stringify(data.user);
+      Cookies.set("User", userValue, { expires: 0.5, sameSite: "lax" });
+
+      const cargoValue = typeof data.cargoUser === "string" ? data.cargoUser : JSON.stringify(data.cargoUser);
+      Cookies.set("cargoUser", cargoValue, { expires: 0.5, sameSite: "lax" });
 
       // Redireciona conforme cargo
       if (data.cargoUser === "Cliente") {
