@@ -41,6 +41,10 @@ export function middleware(req: NextRequest) {
         return NextResponse.next()
     }
 
+    if (path.startsWith("/conta_cliente/api")){
+        return NextResponse.next()
+    }
+
     // Banido
     if (!authToken) {
         if (publicRoute) return NextResponse.next()

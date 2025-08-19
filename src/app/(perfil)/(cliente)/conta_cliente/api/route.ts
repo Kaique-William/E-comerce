@@ -1,5 +1,6 @@
 import { openDb } from "../../../../../db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export async function GET() {
   const db = await openDb();
@@ -34,6 +35,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+
   const db = await openDb();
   const {
     nome,
@@ -44,9 +46,12 @@ export async function POST(req: NextRequest) {
   } = await req.json();
 
   try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(senha, saltRounds);
+
     await db.run(
       "INSERT INTO usuarios (nome, email, senha, telefone, endereco) VALUES (?, ?, ?, ?, ?)",
-      [nome, email, senha, telefone, endereco]
+      [nome, email, hashedPassword, telefone, endereco]
     );
 
     return NextResponse.json(

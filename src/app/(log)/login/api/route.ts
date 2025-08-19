@@ -1,6 +1,7 @@
 import { openDb } from "../../../../db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
 import { CreateToken } from "../../../_lib/token";
+import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const db = await openDb(); // Inicia a conexão com o banco
@@ -17,8 +18,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if(search.length > 0){
       const user = search[0];
 
+      const senhaValida = await bcrypt.compare(senha, user.senha);
+
       // Verifica se a senha está correta e cria o token de acesso
-      if(user.email === email && user.senha === senha){
+      if(user.email === email && senhaValida){
         const token = await CreateToken(user); // Gera o token de acesso
     
         return NextResponse.json({ message: "Usuario Autenticado!", token:token, cargoUser: user.cargo, user: user.nome }, { status: 200 });

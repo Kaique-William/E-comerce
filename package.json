@@ -6,9 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "completo": "npm install sqlite sqlite3 js-cookie"
+    "completo": "npm install sqlite sqlite3 js-cookie bcrypt"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^6.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",

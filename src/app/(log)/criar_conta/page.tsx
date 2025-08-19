@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CriarConta() {
   const [form, setForm] = useState({
@@ -10,6 +11,7 @@ export default function CriarConta() {
     endereco: "",
   });
   const [mensagem, setMensagem] = useState("");
+  const router = useRouter();
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -35,6 +37,8 @@ export default function CriarConta() {
         telefone: "",
         endereco: "",
       });
+
+      router.push("/login")
     } else {
       const data = await res.json();
       setMensagem(data.error || "Erro ao criar conta.");
