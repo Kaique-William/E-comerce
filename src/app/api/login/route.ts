@@ -1,6 +1,6 @@
-import { openDb } from "../../../../db/confgDB";
+import { openDb } from "../../../db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
-import { CreateToken } from "../../../_lib/token";
+import { CreateToken } from "../../_lib/token";
 import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest, res: NextResponse) {

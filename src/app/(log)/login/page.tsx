@@ -14,7 +14,7 @@ export default function Login() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
-    const res = await fetch("/login/api", {
+    const res = await fetch("api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, senha }),

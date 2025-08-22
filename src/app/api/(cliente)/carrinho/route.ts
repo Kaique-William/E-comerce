@@ -1,4 +1,4 @@
-import { openDb } from "../../../../../db/confgDB";
+import { openDb } from "../../../../db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {

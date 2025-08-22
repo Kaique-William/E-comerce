@@ -22,7 +22,7 @@ export default function CriarConta() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const res = await fetch("/conta_cliente/api", {
+    const res = await fetch("api/info_cliente", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),

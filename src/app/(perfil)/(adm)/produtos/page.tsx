@@ -26,7 +26,7 @@ export default function Produtos() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/produtos/api");
+        const response = await fetch("api/produtos");
         let data = await response.json();
         if (data && typeof data === "object" && !Array.isArray(data)) {
           if (Array.isArray(data.produtos)) {
@@ -127,7 +127,7 @@ export default function Produtos() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-4 sm:mb-0">
@@ -187,7 +187,7 @@ export default function Produtos() {
                       return (
                         <tr
                           key={item.id_produto}
-                          className="hover:bg-gray-50 border-b border-gray-200"
+                          className="hover:bg-gray-50 border-t border-black"
                         >
                           <td colSpan={10} className="px-4 py-4">
                             <div className="flex flex-col gap-2">

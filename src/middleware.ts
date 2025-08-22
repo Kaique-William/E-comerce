@@ -31,20 +31,6 @@ export function middleware(req: NextRequest) {
 
     const publicRoute = publicRoutes.find(route => route.path === path)
 
-  
-    // Se for rota de API dentro de produtos, deixa passar
-    if (path.startsWith("/produtos/api")) { 
-        return NextResponse.next()
-    } 
-    
-    if (path.startsWith("/login/api")){
-        return NextResponse.next()
-    }
-
-    if (path.startsWith("/conta_cliente/api")){
-        return NextResponse.next()
-    }
-
     // Banido
     if (!authToken) {
         if (publicRoute) return NextResponse.next()
