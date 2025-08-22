@@ -57,7 +57,7 @@ export default function Produtos() {
   const handleConfirmar = async () => {
     if (!produtoEditado) return;
     try {
-      const response = await fetch(`/produtos/api`, {
+      const response = await fetch(`/api/produtos`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export default function Produtos() {
   const handleDelete = async (id_produto: number) => {
     if (confirm("Tem certeza que deseja excluir este produto?")) {
       try {
-        const response = await fetch(`/produtos/api`, {
+        const response = await fetch(`/api/produtos`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
