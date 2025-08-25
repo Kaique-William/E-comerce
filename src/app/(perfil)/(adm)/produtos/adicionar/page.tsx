@@ -17,6 +17,7 @@ export default function Adicionar() {
   const [dataUltimaRemeca, setDataUltimaRemeca] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [file, setFile] = useState<File | null>(null);
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +28,13 @@ export default function Adicionar() {
     setQuantidade("");
     setQuantidade_minima("");
     setQuantidade_ultima_remeca("");
+    setCategoria("");
+    setTipo("");
+    setCor("");
+    setMarca("");
+    setTamanho("");
+    setDescricao("");
+    setFile(null);
     setDataUltimaRemeca(new Date().toISOString().split("T")[0]);
   };
 
@@ -35,11 +43,9 @@ export default function Adicionar() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/produtos/api", {
+      const resProduto = await fetch("/api/produtos", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome: nome.trim(),
           valor: parseFloat(valor) || 0,
@@ -56,20 +62,45 @@ export default function Adicionar() {
         }),
       });
 
-      if (res.ok) {
-        alert("Produto adicionado com sucesso!");
-        resetForm();
-        router.push("/produtos");
-      } else {
-        const data = await res.json();
+      if (!resProduto.ok) {
+        const data = await resProduto.json();
         alert(data.error || "Erro ao adicionar produto.");
+        return;
       }
+
+      const produtoData = await resProduto.json();
+      console.log("data", produtoData)
+      const produtoId = produtoData.id;
+
+      // Enviar imagem, se houver
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("produto_id", produtoId.toString());
+
+        const resImagem = await fetch("/api/imagem", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!resImagem.ok) {
+          const data = await resImagem.json();
+          alert(data.error || "Produto adicionado, mas falha no upload da imagem.");
+        }
+      }
+
+      alert("Produto adicionado com sucesso!");
+      resetForm();
+      router.push("/produtos");
+
     } catch (error) {
+      console.error(error);
       alert("Erro de conexão. Tente novamente.");
+
     } finally {
       setIsLoading(false);
     }
-  };
+};
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -85,26 +116,48 @@ export default function Adicionar() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Imagem do Produto
               </label>
-              <div className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
-                <div className="text-center">
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                    />
-                  </svg>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Clique para fazer upload
-                  </p>
-                </div>
-              </div>
+
+              {/* Área de upload */}
+              <label
+                htmlFor="file-upload"
+                className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                {file ? (
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt="Preview"
+                    className="h-full object-contain rounded-lg"
+                  />
+                ) : (
+                  <div className="text-center">
+                    <svg
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
+                    </svg>
+                    <p className="mt-2 text-sm text-gray-600">
+                      Clique para fazer upload
+                    </p>
+                  </div>
+                )}
+              </label>
+
+              {/* Input escondido */}
+              <input
+                id="file-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
             </div>
 
             {/* Nome do Produto */}

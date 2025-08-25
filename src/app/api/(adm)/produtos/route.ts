@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     typeof valor === "string" ? parseFloat(valor.replace(",", ".")) : valor;
 
   try {
-    await db.run(
+    const result = await db.run(
       `INSERT INTO Produtos (nome, valor, quantidade, quantidade_minima,
         data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo, color,
         marca, tamanho, descricao)
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
         descricao,
       ]
     );
-    return NextResponse.json({ message: "Produto adicionado com sucesso" });
+    return NextResponse.json({ message: "Produto adicionado com sucesso", id: result.lastID });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : String(error) },
