@@ -24,7 +24,7 @@ export default function ListaProdutos() {
         fetchData();
     }, []);
 
-    console.log(produtos);
+    // console.log(produtos);
 
     return (
         <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

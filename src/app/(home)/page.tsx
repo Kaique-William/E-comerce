@@ -1,4 +1,4 @@
-import { openDb } from "../db/confgDB.js";
+import { openDb } from "../../db/confgDB.js";
 import Promocoes from "@/components/home/promocoes";
 import ListaProdutos from "@/components/home/listaProdutos";
 
