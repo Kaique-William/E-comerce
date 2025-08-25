@@ -6,26 +6,28 @@ export async function POST(req: NextRequest){
 
     try{
         const form = await req.formData();
-        const file = form.get("file") as File | null;
+        const files = form.getAll("file") as File[];
         const name = (form.get("name") as string | null) ?? undefined
         const produtoId = form.get("produto_id") as string | null;
         const perfil_id = form.get("perfil_id") as string | null;
 
-        if (!file){
-            return NextResponse.json({ message: "Imagem necessaria" }, { status: 400 });
+        if (files.length === 0) {
+            return NextResponse.json({ message: "Nenhuma imagem enviada, apenas dados do produto" });
         }
-        // Converte o arquivo em ArrayBuffer para depois virar Buffer do Node
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        // Tipo MIME da imagem (ex: image/jpeg). Se não houver, usa tipo genérico
-        const tipo = file.type || "application/octet-stream";
-        const originalName = name ?? file.name ?? "sem nome";
 
-        await db.run("INSERT INTO Imagens (produto_id, perfil_id, name, tipo, imagem) VALUES (?, ?, ?, ?, ?)",
-             [produtoId ? parseInt(produtoId) : null, perfil_id ? parseInt(perfil_id) : null, originalName, tipo, buffer]
-        );
+        for (const file of files) {
+            const arrayBuffer = await file.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            const tipo = file.type || "application/octet-stream";
+            const originalName = name ?? file.name ?? "sem nome";
 
-        return Response.json({ message: "Imagem salva", name: originalName });
+            await db.run(
+                "INSERT INTO Imagens (produto_id, perfil_id, name, tipo, imagem) VALUES (?, ?, ?, ?, ?)",
+                [produtoId ? parseInt(produtoId) : null, perfil_id ? parseInt(perfil_id) : null, originalName, tipo, buffer]
+            );
+        }
+        
+        return NextResponse.json({ message: "Imagens salvas com sucesso" });
     } catch (err){
         console.log("Falha ao salvar imagem: ", err)
         return Response.json({ error: "Falha no upload." }, { status: 500 });
