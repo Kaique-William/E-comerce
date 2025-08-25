@@ -69,7 +69,6 @@ export default function Adicionar() {
       }
 
       const produtoData = await resProduto.json();
-      console.log("data", produtoData)
       const produtoId = produtoData.id;
 
       // Enviar imagem, se houver
