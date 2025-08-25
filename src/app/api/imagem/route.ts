@@ -6,7 +6,7 @@ export async function POST(req: NextRequest){
 
     try{
         const form = await req.formData();
-        const files = form.getAll("file") as File[];
+        const files = form.getAll("files") as File[];
         const name = (form.get("name") as string | null) ?? undefined
         const produtoId = form.get("produto_id") as string | null;
         const perfil_id = form.get("perfil_id") as string | null;

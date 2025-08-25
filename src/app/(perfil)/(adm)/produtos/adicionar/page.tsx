@@ -17,7 +17,7 @@ export default function Adicionar() {
   const [dataUltimaRemeca, setDataUltimaRemeca] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +34,7 @@ export default function Adicionar() {
     setMarca("");
     setTamanho("");
     setDescricao("");
-    setFile(null);
+    setFiles([]);
     setDataUltimaRemeca(new Date().toISOString().split("T")[0]);
   };
 
@@ -72,19 +72,21 @@ export default function Adicionar() {
       const produtoId = produtoData.id;
 
       // Enviar imagem, se houver
-      if (file) {
+      if (files.length > 0) {
         const formData = new FormData();
-        formData.append("file", file);
+        files.forEach((file) => formData.append("files", file)); 
         formData.append("produto_id", produtoId.toString());
 
         const resImagem = await fetch("/api/imagem", {
           method: "POST",
           body: formData,
         });
-
+  
         if (!resImagem.ok) {
           const data = await resImagem.json();
-          alert(data.error || "Produto adicionado, mas falha no upload da imagem.");
+          alert(
+            data.error || "Produto adicionado, mas falha no upload das imagens."
+          );
         }
       }
 
@@ -110,23 +112,27 @@ export default function Adicionar() {
 
         <div className=" bg-white rounded-lg shadow-md p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Upload de Imagem */}
+            {/* Upload de Imagens */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imagem do Produto
+                Imagens do Produto
               </label>
 
-              {/* Área de upload */}
               <label
                 htmlFor="file-upload"
                 className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
               >
-                {file ? (
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt="Preview"
-                    className="h-full object-contain rounded-lg"
-                  />
+                {files.length > 0 ? (
+                  <div className="flex overflow-x-auto space-x-2">
+                    {files.map((file, idx) => (
+                      <img
+                        key={idx}
+                        src={URL.createObjectURL(file)}
+                        alt={`Preview ${idx}`}
+                        className="h-full object-contain rounded-lg"
+                      />
+                    ))}
+                  </div>
                 ) : (
                   <div className="text-center">
                     <svg
@@ -149,15 +155,18 @@ export default function Adicionar() {
                 )}
               </label>
 
-              {/* Input escondido */}
               <input
                 id="file-upload"
                 type="file"
                 accept="image/*"
+                multiple
                 className="hidden"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={(e) =>
+                  setFiles(Array.from(e.target.files || []))
+                }
               />
             </div>
+
 
             {/* Nome do Produto */}
             <div>
