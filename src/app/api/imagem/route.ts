@@ -29,9 +29,47 @@ export async function POST(req: NextRequest){
         console.log("Falha ao salvar imagem: ", err)
         return Response.json({ error: "Falha no upload." }, { status: 500 });
     }
-
 }
 
-export async function GET() {
-    
+export async function GET(req: NextRequest) {
+  const db = await openDb();
+
+  try {
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
+    const name = url.searchParams.get("name");
+
+    if (!id && !name) {
+      return NextResponse.json({ error: "É necessário fornecer id ou name" }, { status: 400 });
+    }
+
+    let imagem;
+
+    if (id) {
+      imagem = await db.get(
+        "SELECT id, produto_id, name, tipo, imagem FROM Imagens WHERE id = ?",
+        [parseInt(id)]
+      );
+    } else if (name) {
+      imagem = await db.get(
+        "SELECT id, produto_id, name, tipo, imagem FROM Imagens WHERE name = ?",
+        [name]
+      );
+    }
+
+    if (!imagem) {
+      return NextResponse.json({ error: "Imagem não encontrada" }, { status: 404 });
+    }
+
+    return new Response(imagem.imagem, {
+      status: 200,
+      headers: {
+        "Content-Type": imagem.tipo,
+        "Content-Disposition": `inline; filename="${imagem.name}"`,
+      },
+    });
+  } catch (err) {
+    console.log("Erro ao buscar imagem: ", err);
+    return NextResponse.json({ error: "Falha ao buscar imagem" }, { status: 500 });
+  }
 }
