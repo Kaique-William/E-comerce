@@ -38,8 +38,10 @@ export default function Header() {
   };
 
   const logout = () => {
-    Cookies.remove("token"); // nome do cookie que você usa
-    Cookies.remove("user");  // se tiver outro
+    Cookies.remove("Token"); // nome do cookie que você usa
+    Cookies.remove("User");  // se tiver outro
+    Cookies.remove("cargoUser")
+    Cookies.remove("id");
     setTimeout(() => {
       window.location.href = "/";
     }, 500);
@@ -106,7 +108,7 @@ export default function Header() {
         className="bg-white p-2 sm:p-2 md:p-3 rounded-full inline-block flex-shrink-0 cursor-pointer"
         onClick={toggleClienteSidebar}
       >
-        <User className="w-5 h-5 text-black" />
+        <User className="w-4 h-4 text-black" />
       </div>
 
       {/* Sidebar cliente */}

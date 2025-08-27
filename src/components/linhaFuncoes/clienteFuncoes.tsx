@@ -8,7 +8,7 @@ export default function ClienteFuncoes() {
         href="/conta_cliente"
         className="px-2 py-1 text-xs sm:text-sm md:text-base flex items-center justify-center hover:border-b-2 border-red-700 whitespace-nowrap transition-colors"
       >
-        Conta Cliente
+        Perfil
       </Link>
       <Link
         href="/carrinho"
