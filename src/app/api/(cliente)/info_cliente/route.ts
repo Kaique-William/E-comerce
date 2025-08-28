@@ -2,15 +2,34 @@ import { openDb } from "../../../../db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const db = await openDb();
 
-  // Tenta buscar dados da tabela 'usuarios'
   try {
-    const usuarios = await db.all(
-      "SELECT id_usuario, nome, email, senha, telefone, endereco, cargo FROM usuarios"
-    );
-    return NextResponse.json(usuarios);
+    // Pega o id da query string (?id=123)
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (id) {
+      // Busca usuário específico pelo id
+      const usuario = await db.get(
+        "SELECT id_usuario, nome, email, telefone, endereco, cargo FROM usuarios WHERE id_usuario = ?",
+        [id]
+      );
+      if (!usuario) {
+        return NextResponse.json(
+          { error: "Usuário não encontrado" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json(usuario);
+    } else {
+      // Se não passar id, retorna todos os usuários
+      const usuarios = await db.all(
+        "SELECT id_usuario, nome, email, telefone, endereco, cargo FROM usuarios"
+      );
+      return NextResponse.json(usuarios);
+    }
   } catch (error) {
     // Se a tabela não existir, cria e retorna vazia
     if (error instanceof Error && error.message.includes("no such table")) {
@@ -35,15 +54,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-
   const db = await openDb();
-  const {
-    nome,
-    email,
-    senha,
-    telefone,
-    endereco,
-  } = await req.json();
+  const { nome, email, senha, telefone, endereco } = await req.json();
 
   try {
     const saltRounds = 10;
@@ -93,7 +105,10 @@ export async function PATCH(req: NextRequest) {
   values.push(id);
 
   try {
-    await db.run(`UPDATE usuarios SET ${setClause} WHERE id = ?`, values);
+    await db.run(
+      `UPDATE usuarios SET ${setClause} WHERE id_usuario = ?`,
+      values
+    );
 
     return NextResponse.json(
       { message: "Usuário atualizado com sucesso!" },
@@ -112,7 +127,7 @@ export async function DELETE(req: NextRequest) {
   const db = await openDb();
   const { id } = await req.json();
   try {
-    await db.run("DELETE FROM usuarios WHERE id = ?", [id]);
+    await db.run("DELETE FROM usuarios WHERE id_usuario = ?", [id]);
     return NextResponse.json(
       { message: "Usuário excluido com sucesso!" },
       { status: 201 }

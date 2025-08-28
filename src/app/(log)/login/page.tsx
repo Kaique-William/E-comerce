@@ -34,15 +34,16 @@ export default function Login() {
       const cargoValue = typeof data.cargoUser === "string" ? data.cargoUser : JSON.stringify(data.cargoUser);
       Cookies.set("cargoUser", cargoValue, { expires: 0.5, sameSite: "lax" });
 
-      const idValue = typeof data.id_usuario === "string" ? data.id_usuario : JSON.stringify(data.id_usuario);
-      console.log(idValue);
+      const idValue = typeof data.id_usuario === "string" ? data.id_usuario : JSON.parse(data.id_usuario);
       Cookies.set("id", idValue, { expires: 0.5, sameSite: "lax" });
 
       // Redireciona conforme cargo
       if (data.cargoUser === "Cliente") {
         router.push("/"); 
+        window.location.reload();
       } else if (data.cargoUser === "ADM") {
         router.push("/vendas"); 
+        window.location.reload();
       }
     } else {
       setMensagem(data.message || "Erro ao fazer login");

@@ -1,24 +1,44 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+
+interface Cliente {
+  id_usuario: number;
+  nome: string;
+  email: string;
+  telefone: string;
+  endereco: string;
+  cargo: string;
+}
 
 export default function Conta_cliente() {
-  // Dados do cliente - em produção, virão de uma API
-  const [cliente, setCliente] = useState({
-    nome: "Kwill",
-    email: "5V0Jd@example.com",
-    telefone: "(11) 99999-9999",
-    endereco: {
-      rua: "Rua Exemplo",
-      numero: "123",
-      complemento: "Apto 45",
-      bairro: "Centro",
-      cidade: "São Paulo",
-      estado: "SP",
-      cep: "01234-567",
-    },
-    cpf: "123.456.789-00",
-    dataNascimento: "15/03/1990",
+
+  const [cliente, setCliente] = useState<Cliente>({
+    id_usuario: 0,
+    nome: "",
+    email: "",
+    telefone: "",
+    endereco: "",
+    cargo: ""
   });
+
+  const id = Cookies.get("id");
+  useEffect(() => {
+    const fetchCliente = async () => {
+      if (id) {
+        try {
+          const res = await fetch(`/api/info_cliente?id=${id}`);
+          const data = await res.json();
+          if (data && !data.error) {
+            setCliente(data);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar cliente:", error);
+        }
+      }
+    };
+    fetchCliente();
+  }, [id]);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -26,10 +46,32 @@ export default function Conta_cliente() {
     setIsEditing(!isEditing);
   };
 
-  const handleSave = () => {
-    // Aqui você implementaria a lógica para salvar as alterações
-    setIsEditing(false);
-    alert("Dados salvos com sucesso!");
+  const handleSave = async () => {
+    try {
+      const res = await fetch(`/api/info_cliente`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: cliente.id_usuario,
+          nome: cliente.nome,
+          email: cliente.email,
+          telefone: cliente.telefone,
+          endereco: cliente.endereco
+        }),
+      });
+
+      if (res.ok) {
+        setIsEditing(false);
+        alert("Dados salvos com sucesso!");
+      } else {
+        alert("Erro ao salvar dados");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      alert("Erro ao salvar dados");
+    }
   };
 
   return (
@@ -47,17 +89,31 @@ export default function Conta_cliente() {
             <h2 className="text-xl font-semibold text-gray-900">
               Dados Pessoais
             </h2>
-            <button
-              onClick={
-                isEditing ? () => setIsEditing(false) : () => setIsEditing(true)
-              }
-              className={`px-4 py-2 rounded-md font-medium transition-colors ${isEditing
-                  ? "bg-green-600 text-white hover:bg-green-700"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
-                }`}
-            >
-              {isEditing ? "Salvar" : "Editar"}
-            </button>
+            <div className="flex gap-2">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={handleSave}
+                    className="px-4 py-2 bg-green-600 text-white rounded-md font-medium transition-colors hover:bg-green-700"
+                  >
+                    Salvar
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-md font-medium transition-colors hover:bg-gray-700"
+                  >
+                    Cancelar
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleEdit}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md font-medium transition-colors hover:bg-blue-700"
+                >
+                  Editar
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -70,14 +126,14 @@ export default function Conta_cliente() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={cliente.nome}
+                    value={cliente.nome || ""}
                     onChange={(e) =>
                       setCliente({ ...cliente, nome: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  <p className="text-gray-900">{cliente.nome}</p>
+                  <p className="text-gray-900">{cliente.nome || "Não informado"}</p>
                 )}
               </div>
 
@@ -88,14 +144,14 @@ export default function Conta_cliente() {
                 {isEditing ? (
                   <input
                     type="email"
-                    value={cliente.email}
+                    value={cliente.email || ""}
                     onChange={(e) =>
                       setCliente({ ...cliente, email: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  <p className="text-gray-900">{cliente.email}</p>
+                  <p className="text-gray-900">{cliente.email || "Não informado"}</p>
                 )}
               </div>
 
@@ -106,52 +162,18 @@ export default function Conta_cliente() {
                 {isEditing ? (
                   <input
                     type="tel"
-                    value={cliente.telefone}
+                    value={cliente.telefone || ""}
                     onChange={(e) =>
                       setCliente({ ...cliente, telefone: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  <p className="text-gray-900">{cliente.telefone}</p>
+                  <p className="text-gray-900">{cliente.telefone || "Não informado"}</p>
                 )}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  CPF
-                </label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={cliente.cpf}
-                    onChange={(e) =>
-                      setCliente({ ...cliente, cpf: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="text-gray-900">{cliente.cpf}</p>
-                )}
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Data de Nascimento
-                </label>
-                {isEditing ? (
-                  <input
-                    type="date"
-                    value={cliente.dataNascimento}
-                    onChange={(e) =>
-                      setCliente({ ...cliente, dataNascimento: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="text-gray-900">{cliente.dataNascimento}</p>
-                )}
-              </div>
             </div>
 
             {/* Endereço */}
@@ -162,199 +184,34 @@ export default function Conta_cliente() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Rua
+                  Endereço Completo
                 </label>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    value={cliente.endereco.rua}
+                  <textarea
+                    value={cliente.endereco || ""}
                     onChange={(e) =>
-                      setCliente({
-                        ...cliente,
-                        endereco: { ...cliente.endereco, rua: e.target.value },
-                      })
+                      setCliente({ ...cliente, endereco: e.target.value })
                     }
+                    placeholder="Digite seu endereço completo"
+                    rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  <p className="text-gray-900">{cliente.endereco.rua}</p>
+                  <p className="text-gray-900 bg-gray-50 px-3 py-2 rounded-md min-h-[60px]">
+                    {cliente.endereco || "Endereço não informado"}
+                  </p>
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Número
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={cliente.endereco.numero}
-                      onChange={(e) =>
-                        setCliente({
-                          ...cliente,
-                          endereco: {
-                            ...cliente.endereco,
-                            numero: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{cliente.endereco.numero}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Complemento
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={cliente.endereco.complemento}
-                      onChange={(e) =>
-                        setCliente({
-                          ...cliente,
-                          endereco: {
-                            ...cliente.endereco,
-                            complemento: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <p className="text-gray-900">
-                      {cliente.endereco.complemento}
-                    </p>
-                  )}
-                </div>
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                <h4 className="text-sm font-medium text-blue-800 mb-2">
+                  💡 Dica
+                </h4>
+                <p className="text-sm text-blue-700">
+                  Para um endereço mais organizado, você pode incluir: rua, número,
+                  bairro, cidade, estado e CEP em uma única linha.
+                </p>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Cidade
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={cliente.endereco.cidade}
-                      onChange={(e) =>
-                        setCliente({
-                          ...cliente,
-                          endereco: {
-                            ...cliente.endereco,
-                            cidade: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{cliente.endereco.cidade}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Estado
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={cliente.endereco.estado}
-                      onChange={(e) =>
-                        setCliente({
-                          ...cliente,
-                          endereco: {
-                            ...cliente.endereco,
-                            estado: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{cliente.endereco.estado}</p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Bairro
-                </label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={cliente.endereco.bairro}
-                    onChange={(e) =>
-                      setCliente({
-                        ...cliente,
-                        endereco: {
-                          ...cliente.endereco,
-                          bairro: e.target.value,
-                        },
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="text-gray-900">{cliente.endereco.bairro}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  CEP
-                </label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={cliente.endereco.cep}
-                    onChange={(e) =>
-                      setCliente({
-                        ...cliente,
-                        endereco: {
-                          ...cliente.endereco,
-                          cep: e.target.value,
-                        },
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="text-gray-900">{cliente.endereco.cep}</p>
-                )}
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Endereço Completo
-              </label>
-              {isEditing ? (
-                <textarea
-                  value={`${cliente.endereco.rua}, ${cliente.endereco.numero}, ${cliente.endereco.cidade}, ${cliente.endereco.estado}`}
-                  onChange={(e) =>
-                    setCliente({
-                      ...cliente,
-                      endereco: {
-                        ...cliente.endereco,
-                        rua: e.target.value.split(",")[0].trim(),
-                        numero: e.target.value.split(",")[1].trim(),
-                        cidade: e.target.value.split(",")[2].trim(),
-                        estado: e.target.value.split(",")[3].trim(),
-                      },
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              ) : (
-                <p className="text-gray-900">{`${cliente.endereco.rua}, ${cliente.endereco.numero}, ${cliente.endereco.cidade}, ${cliente.endereco.estado}`}</p>
-              )}
             </div>
           </div>
         </div>
