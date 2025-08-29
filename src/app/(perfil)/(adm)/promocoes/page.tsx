@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Tipo1 from "./(tipos)/@tipo1/page";
-import Tipo2 from "./(tipos)/@tipo2/page";
-import Tipo3 from "./(tipos)/@tipo3/page";
+import Tipo1 from "./(tipos)/tipo1/page";
+import Tipo2 from "./(tipos)/tipo2/page";
+import Tipo3 from "./(tipos)/tipo3/page";
 
 export default function Promocoes() {
     const [tipo, setTipo] = useState(1);

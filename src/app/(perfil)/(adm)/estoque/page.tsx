@@ -26,7 +26,7 @@ export default function Produtos() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("api/produtos");
+        const response = await fetch("api/estoque");
         let data = await response.json();
         if (data && typeof data === "object" && !Array.isArray(data)) {
           if (Array.isArray(data.produtos)) {
@@ -57,7 +57,7 @@ export default function Produtos() {
   const handleConfirmar = async () => {
     if (!produtoEditado) return;
     try {
-      const response = await fetch(`/api/produtos`, {
+      const response = await fetch(`/api/estoque`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export default function Produtos() {
   const handleDelete = async (id_produto: number) => {
     if (confirm("Tem certeza que deseja excluir este produto?")) {
       try {
-        const response = await fetch(`/api/produtos`, {
+        const response = await fetch(`/api/estoque`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

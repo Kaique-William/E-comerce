@@ -7,6 +7,8 @@ interface Produto {
     nome: string;
     valor: number;
     quantidade: number;
+    categoria: string;
+    tipo: string;
 }
 
 export default function ListaProdutos() {
@@ -16,15 +18,18 @@ export default function ListaProdutos() {
     useEffect(() => {
         const fetchData = async () => {
             setCarregando(true);
-            const response = await fetch("/api/produtos");
-            const data = await response.json();
-            setProdutos(data);
+            try {
+                const response = await fetch("/api/estoque");
+                const data = await response.json();
+                setProdutos(data);
+            } catch (error) {
+                console.error("Erro ao carregar produtos:", error);
+                setProdutos([]);
+            }
             setCarregando(false);
         };
         fetchData();
     }, []);
-
-    // console.log(produtos);
 
     return (
         <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -49,9 +54,14 @@ export default function ListaProdutos() {
                             <p className="text-base sm:text-lg text-green-600 font-bold mb-1">
                                 R$ {produto.valor.toFixed(2)}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 mb-1">
                                 Quantidade: {produto.quantidade}
                             </p>
+                            {produto.categoria && (
+                                <p className="text-xs text-gray-500">
+                                    {produto.categoria} • {produto.tipo}
+                                </p>
+                            )}
                         </div>
                     ))
                 )}
