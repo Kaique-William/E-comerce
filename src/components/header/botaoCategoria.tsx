@@ -1,22 +1,51 @@
 "use client";
 import { useState } from "react";
 import { X, Menu } from "lucide-react";
+import { useFiltro } from "@/contexts/FiltroContext";
 
 interface tipo {
-    [categoria: string]: string[]
+    [categoria: string]: string[];
 }
 
 export default function BotaoCategoria() {
-
     const categorias = ["masculino", "feminino", "unisex"];
     const tipos: tipo = {
-        masculino: ["Camisa", "Calça", "Bermuda", "Blusa", "Jaqueta", "Shorts", "Calçados", "Intimo", "Outros"],
-        feminino: ["Camisa", "Calça", "Vestido", "Blusa", "Jaqueta", "Shorts", "Saia", "Calçados", "Intimo", "Outros"],
-        unisex: ["Camisa", "Calça", "Calçados", "Jaqueta", "Blusa", "Shorts", "Intimo", "Outros"]
+        masculino: [
+            "Camisa",
+            "Calça",
+            "Bermuda",
+            "Blusa",
+            "Jaqueta",
+            "Shorts",
+            "Calçados",
+            "Intimo",
+            "Outros",
+        ],
+        feminino: [
+            "Camisa",
+            "Calça",
+            "Vestido",
+            "Blusa",
+            "Jaqueta",
+            "Shorts",
+            "Saia",
+            "Calçados",
+            "Intimo",
+            "Outros",
+        ],
+        unisex: [
+            "Camisa",
+            "Calça",
+            "Calçados",
+            "Jaqueta",
+            "Blusa",
+            "Shorts",
+            "Intimo",
+            "Outros",
+        ],
     };
 
-    const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
-    const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null);
+    const { categoriaSelecionada, tipoSelecionado, setCategoriaSelecionada, setTipoSelecionado, limparFiltros } = useFiltro();
     const [sidebarVisible, setSidebarVisible] = useState(false);
 
     const handleCategoriaClick = (categoria: string) => {
@@ -37,9 +66,8 @@ export default function BotaoCategoria() {
         setSidebarVisible(!sidebarVisible);
     };
 
-    const limparFiltros = () => {
-        setCategoriaSelecionada(null);
-        setTipoSelecionado(null);
+    const handleLimparFiltros = () => {
+        limparFiltros();
     };
 
     return (
@@ -67,7 +95,7 @@ export default function BotaoCategoria() {
                 {/* Botão para limpar filtros */}
                 {(categoriaSelecionada || tipoSelecionado) && (
                     <button
-                        onClick={limparFiltros}
+                        onClick={handleLimparFiltros}
                         className="w-full mb-4 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm transition-colors"
                     >
                         Limpar Filtros
@@ -78,7 +106,7 @@ export default function BotaoCategoria() {
                     {categorias.map((categoria) => (
                         <li key={categoria} className="mb-2">
                             <div
-                                className={`cursor-pointer font-semibold hover:underline ${categoriaSelecionada === categoria ? 'text-blue-400' : ''
+                                className={`cursor-pointer font-semibold hover:underline ${categoriaSelecionada === categoria ? "text-blue-400" : ""
                                     }`}
                                 onClick={() => handleCategoriaClick(categoria)}
                             >
@@ -90,7 +118,7 @@ export default function BotaoCategoria() {
                                     {tipos[categoria].map((tipo) => (
                                         <li
                                             key={tipo}
-                                            className={`cursor-pointer hover:text-gray-300 ${tipoSelecionado === tipo ? 'text-blue-400' : ''
+                                            className={`cursor-pointer hover:text-gray-300 ${tipoSelecionado === tipo ? "text-blue-400" : ""
                                                 }`}
                                             onClick={() => handleTipoClick(tipo)}
                                         >

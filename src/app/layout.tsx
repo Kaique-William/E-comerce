@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Header from "@/components/header/header";
+import { FiltroProvider } from "@/contexts/FiltroContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="bg-orange-200">
       <body>
-        <Header />
-        <main>{children}</main>
+        <FiltroProvider>
+          <Header />
+          <main>{children}</main>
+        </FiltroProvider>
       </body>
     </html>
   );

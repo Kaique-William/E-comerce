@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useFiltro } from "@/contexts/FiltroContext";
 
 interface Produto {
     id_produto: number;
@@ -9,11 +10,15 @@ interface Produto {
     quantidade: number;
     categoria: string;
     tipo: string;
+    marca?: string;
+    id_imagem?: number;
 }
 
 export default function ListaProdutos() {
     const [produtos, setProdutos] = useState<Produto[]>([]);
+    const [selecionado, setSelecionado] = useState<Produto | null>(null);
     const [carregando, setCarregando] = useState(true);
+    const { categoriaSelecionada, tipoSelecionado, termoBusca } = useFiltro();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,22 +36,80 @@ export default function ListaProdutos() {
         fetchData();
     }, []);
 
+    const handleclick = (produto: Produto) => {
+        setSelecionado(produto);
+    }
+
+    // Filtrar produtos baseado na categoria, tipo e termo de busca
+    const produtosFiltrados = useMemo(() => {
+        let filtrados = produtos;
+
+        // Filtrar por categoria
+        if (categoriaSelecionada) {
+            filtrados = filtrados.filter(produto =>
+                produto.categoria?.toLowerCase() === categoriaSelecionada.toLowerCase()
+            );
+        }
+
+        // Filtrar por tipo
+        if (tipoSelecionado) {
+            filtrados = filtrados.filter(produto =>
+                produto.tipo?.toLowerCase() === tipoSelecionado.toLowerCase()
+            );
+        }
+
+        // Filtrar por termo de busca (nome, tipo, marca, categoria)
+        if (termoBusca.trim()) {
+            const termo = termoBusca.toLowerCase().trim();
+            filtrados = filtrados.filter(produto => {
+                const nome = produto.nome?.toLowerCase() || '';
+                const tipo = produto.tipo?.toLowerCase() || '';
+                const marca = produto.marca?.toLowerCase() || '';
+                const categoria = produto.categoria?.toLowerCase() || '';
+
+                return nome.includes(termo) ||
+                    tipo.includes(termo) ||
+                    marca.includes(termo) ||
+                    categoria.includes(termo);
+            });
+        }
+
+        return filtrados;
+    }, [produtos, categoriaSelecionada, tipoSelecionado, termoBusca]);
+
     return (
         <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Mostrar filtros ativos */}
+            {(categoriaSelecionada || tipoSelecionado || termoBusca.trim()) && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                        Filtros ativos:
+                        {categoriaSelecionada && <span className="font-semibold ml-1">{categoriaSelecionada}</span>}
+                        {tipoSelecionado && <span className="font-semibold ml-1">• {tipoSelecionado}</span>}
+                        {termoBusca.trim() && <span className="font-semibold ml-1">•{termoBusca}</span>}
+                    </p>
+                </div>
+            )}
+
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                 {carregando ? (
                     <div className="text-center py-12">
                         <p className="text-gray-500 text-lg">Carregando produtos...</p>
                     </div>
-                ) : produtos.length === 0 ? (
+                ) : produtosFiltrados.length === 0 ? (
                     <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">Nenhum produto encontrado</p>
+                        <p className="text-gray-500 text-lg">
+                            {categoriaSelecionada || tipoSelecionado || termoBusca.trim()
+                                ? "Nenhum produto encontrado com os filtros selecionados"
+                                : "Nenhum produto encontrado"}
+                        </p>
                     </div>
                 ) : (
-                    produtos.map((produto) => (
-                        <div
+                    produtosFiltrados.map((produto) => (
+                        <a
                             key={produto.id_produto}
-                            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 p-4 sm:p-6"
+                            href={`/produtos/${produto.id_produto}`}
+                            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 p-4 sm:p-6 cursor-pointer block"
                         >
                             <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 truncate">
                                 {produto.nome}
@@ -54,15 +117,13 @@ export default function ListaProdutos() {
                             <p className="text-base sm:text-lg text-green-600 font-bold mb-1">
                                 R$ {produto.valor.toFixed(2)}
                             </p>
-                            <p className="text-sm text-gray-600 mb-1">
-                                Quantidade: {produto.quantidade}
-                            </p>
                             {produto.categoria && (
                                 <p className="text-xs text-gray-500">
-                                    {produto.categoria} • {produto.tipo}
+                                    {produto.categoria} •  {produto.tipo}
+                                    {produto.marca && ` • ${produto.marca}`}
                                 </p>
                             )}
-                        </div>
+                        </a>
                     ))
                 )}
             </div>

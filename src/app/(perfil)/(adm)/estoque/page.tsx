@@ -133,7 +133,7 @@ export default function Produtos() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4 sm:mb-0">
             Produtos
           </h1>
-          <Link href="/produtos/adicionar">
+          <Link href="/estoque/adicionar">
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors">
               Adicionar Produto
             </button>

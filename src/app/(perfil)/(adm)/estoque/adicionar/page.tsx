@@ -43,7 +43,7 @@ export default function Adicionar() {
     setIsLoading(true);
 
     try {
-      const resProduto = await fetch("/api/produtos", {
+      const resProduto = await fetch("/api/estoque", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -74,14 +74,14 @@ export default function Adicionar() {
       // Enviar imagem, se houver
       if (files.length > 0) {
         const formData = new FormData();
-        files.forEach((file) => formData.append("files", file)); 
+        files.forEach((file) => formData.append("files", file));
         formData.append("produto_id", produtoId.toString());
 
         const resImagem = await fetch("/api/imagem", {
           method: "POST",
           body: formData,
         });
-  
+
         if (!resImagem.ok) {
           const data = await resImagem.json();
           alert(
@@ -92,19 +92,17 @@ export default function Adicionar() {
 
       alert("Produto adicionado com sucesso!");
       resetForm();
-      router.push("/produtos");
-
+      router.push("/estoque");
     } catch (error) {
       console.error(error);
       alert("Erro de conexão. Tente novamente.");
-
     } finally {
       setIsLoading(false);
     }
-};
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
           Adicionar Novo Produto
@@ -161,12 +159,9 @@ export default function Adicionar() {
                 accept="image/*"
                 multiple
                 className="hidden"
-                onChange={(e) =>
-                  setFiles(Array.from(e.target.files || []))
-                }
+                onChange={(e) => setFiles(Array.from(e.target.files || []))}
               />
             </div>
-
 
             {/* Nome do Produto */}
             <div>
@@ -370,7 +365,6 @@ export default function Adicionar() {
               </div>
             </div>
 
-            
             {/* Valor */}
             <div>
               <label
