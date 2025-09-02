@@ -7,10 +7,14 @@ import { useEffect, useState } from "react";
 export default function BotaoPerfil() {
   const [clienteSidebarVisible, setClienteSidebarVisible] = useState(false);
   const [cargoUser, setCargoUser] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Verifica o cargo do usuário quando o componente é montado
+    // Verifica se o usuário está logado
+    const token = Cookies.get("Token");
     const cargo = Cookies.get("cargoUser");
+
+    setIsLoggedIn(!!token);
     setCargoUser(cargo || null);
   }, []);
 
@@ -64,6 +68,31 @@ export default function BotaoPerfil() {
   const opcoes = cargoUser === "ADM" ? opcoesAdm : opcoesCliente;
   const titulo = cargoUser === "ADM" ? "Administrador" : "Usuário";
 
+  // Se não estiver logado, mostra apenas o botão de login
+  if (!isLoggedIn) {
+    return (
+      <Link href="/login">
+        <button className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow transition-all duration-200 cursor-pointer">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 12h14M12 5l7 7-7 7"
+            />
+          </svg>
+          Login
+        </button>
+      </Link>
+    );
+  }
+
   return (
     <>
       {/* Botão cliente */}
@@ -76,9 +105,8 @@ export default function BotaoPerfil() {
 
       {/* Sidebar cliente */}
       <div
-        className={`fixed top-0 right-0 w-64 h-screen bg-gray-800 p-4 z-50 transform transition-transform duration-300 ${
-          clienteSidebarVisible ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 w-64 h-screen bg-gray-800 p-4 z-50 transform transition-transform duration-300 ${clienteSidebarVisible ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">{titulo}</h2>
@@ -94,26 +122,6 @@ export default function BotaoPerfil() {
             </li>
           ))}
         </ul>
-
-        <Link href="/login" passHref>
-          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow transition-all duration-200">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 12h14M12 5l7 7-7 7"
-              />
-            </svg>
-            Login
-          </button>
-        </Link>
 
         <div className="flex flex-col gap-3 mt-8">
           <button

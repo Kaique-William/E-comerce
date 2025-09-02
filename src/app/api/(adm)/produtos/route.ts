@@ -1,15 +1,47 @@
 import { openDb } from "../../../../db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const db = await openDb();
+  const { searchParams } = new URL(req.url);
+
+  // Parâmetros de filtro
+  const categoria = searchParams.get("categoria");
+  const tipo = searchParams.get("tipo");
+  const busca = searchParams.get("busca");
+
   try {
-    const produtos = await db.all(
-      `SELECT id_produto, nome, valor, quantidade, quantidade_minima,
-              data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo,
-              color, marca, tamanho, descricao
-       FROM Produtos`
-    );
+    let query = `
+      SELECT id_produto, nome, valor, quantidade, quantidade_minima,
+             data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo,
+             color, marca, tamanho, descricao
+      FROM Produtos
+      WHERE 1=1
+    `;
+
+    const params: (string | number)[] = [];
+
+    // Filtro por categoria
+    if (categoria) {
+      query += " AND categoria = ?";
+      params.push(categoria);
+    }
+
+    // Filtro por tipo
+    if (tipo) {
+      query += " AND tipo = ?";
+      params.push(tipo);
+    }
+
+    // Filtro por busca (nome ou descrição)
+    if (busca) {
+      query += " AND (nome LIKE ? OR descricao LIKE ?)";
+      params.push(`%${busca}%`, `%${busca}%`);
+    }
+
+    query += " ORDER BY nome";
+
+    const produtos = await db.all(query, params);
     return NextResponse.json(produtos);
   } catch (error) {
     if (error instanceof Error && error.message.includes("no such table")) {
@@ -62,9 +94,9 @@ export async function POST(req: NextRequest) {
   try {
     const result = await db.run(
       `INSERT INTO Produtos (nome, valor, quantidade, quantidade_minima,
-        data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo, color,
-        marca, tamanho, descricao)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo, color,
+          marca, tamanho, descricao)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         nome,
         valorConvertido,
@@ -80,7 +112,10 @@ export async function POST(req: NextRequest) {
         descricao,
       ]
     );
-    return NextResponse.json({ message: "Produto adicionado com sucesso", id: result.lastID });
+    return NextResponse.json({
+      message: "Produto adicionado com sucesso",
+      id: result.lastID,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : String(error) },
