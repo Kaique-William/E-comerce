@@ -1,4 +1,4 @@
-import { openDb } from "../../../../db/confgDB";
+import { openDb } from "../../../../../db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -54,23 +54,17 @@ export async function POST(req: NextRequest) {
   try {
     await db.run(
       "INSERT INTO vendas (id_cliente, id_itens, quantidade_itens, quantidade_total, valor_unitario, valor_total, destino, data_compra) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      [
-        id_cliente,
-        id_itens,
-        quantidade_itens,
-        quantidade_total,
-        valor_unitario,
-        valor_total,
-        destino,
-        data_compra,
-      ]
+      [id_cliente, id_itens, quantidade_itens, quantidade_total, valor_unitario, valor_total, destino, data_compra]
     );
     return NextResponse.json(
       { message: "Venda criada com sucesso!" },
       { status: 201 }
     );
   } catch (error) {
-    return NextResponse.json({ error: "erro ao criar venda" }, { status: 409 });
+    return NextResponse.json(
+      { error: "erro ao criar venda" },
+      { status: 409 }
+    );
   }
 }
 
@@ -99,7 +93,10 @@ export async function PATCH(req: NextRequest) {
   values.push(id_vendas);
 
   try {
-    await db.run(`UPDATE vendas SET ${setClause} WHERE id_vendas = ?`, values);
+    await db.run(
+      `UPDATE vendas SET ${setClause} WHERE id_vendas = ?`,
+      values
+    );
     return NextResponse.json(
       { message: "Venda atualizada com sucesso!" },
       { status: 200 }

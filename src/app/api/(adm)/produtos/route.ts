@@ -4,13 +4,13 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET() {
   const db = await openDb();
   try {
-    const estoque = await db.all(
+    const produtos = await db.all(
       `SELECT id_produto, nome, valor, quantidade, quantidade_minima,
               data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo,
               color, marca, tamanho, descricao
-       FROM Estoque`
+       FROM Produtos`
     );
-    return NextResponse.json(estoque);
+    return NextResponse.json(produtos);
   } catch (error) {
     if (error instanceof Error && error.message.includes("no such table")) {
       await db.exec(`
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = await db.run(
-      `INSERT INTO Estoque (nome, valor, quantidade, quantidade_minima,
+      `INSERT INTO Produtos (nome, valor, quantidade, quantidade_minima,
         data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo, color,
         marca, tamanho, descricao)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -80,10 +80,7 @@ export async function POST(req: NextRequest) {
         descricao,
       ]
     );
-    return NextResponse.json({
-      message: "Produto adicionado com sucesso",
-      id: result.lastID,
-    });
+    return NextResponse.json({ message: "Produto adicionado com sucesso", id: result.lastID });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : String(error) },
@@ -123,7 +120,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     await db.run(
-      `UPDATE Estoque SET ${setClause} WHERE id_produto = ?`,
+      `UPDATE produtos SET ${setClause} WHERE id_produto = ?`,
       values
     );
     return NextResponse.json(
@@ -143,7 +140,7 @@ export async function DELETE(req: NextRequest) {
   const db = await openDb();
   const { id_produto } = await req.json();
   try {
-    await db.run("DELETE FROM Estoque WHERE id_produto = ?", [id_produto]);
+    await db.run("DELETE FROM produtos WHERE id_produto = ?", [id_produto]);
     return NextResponse.json(
       { message: "Produto excluído com sucesso!" },
       { status: 201 }
@@ -153,6 +150,42 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json(
       { error: "erro ao excluir produto" },
       { status: 409 }
+    );
+  }
+}
+
+export async function GETBYID(req: NextRequest) {
+  const db = await openDb();
+  const { searchParams } = new URL(req.url);
+
+  const id_produto = searchParams.get("id_produto");
+
+  if (!id_produto) {
+    return NextResponse.json(
+      { error: "ID do produto é obrigatório" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const produto = await db.get(
+      "SELECT id_produto, nome, valor, quantidade, quantidade_minima, data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo, cor, marca, tamanho, descricao FROM produtos WHERE id_produto = ?",
+      [id_produto]
+    );
+
+    if (!produto) {
+      return NextResponse.json(
+        { error: "Produto não encontrado" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(produto);
+  } catch (error) {
+    console.error("Erro ao buscar produto:", error);
+    return NextResponse.json(
+      { error: "Erro ao buscar produto" },
+      { status: 500 }
     );
   }
 }

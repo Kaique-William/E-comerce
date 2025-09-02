@@ -3,59 +3,39 @@ import { NextRequest, NextResponse } from "next/server";
 import { CreateToken } from "../../_lib/token";
 import bcrypt from "bcrypt";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, res: NextResponse) {
   const db = await openDb(); // Inicia a conexão com o banco
-
+  
   const { email, senha } = await req.json();
 
   if (!email) {
-    return NextResponse.json(
-      { message: "Email é necessário!" },
-      { status: 400 }
-    );
+    return NextResponse.json({ message: "Email é necessário!" }, { status: 400 });
   }
 
   try {
-    const search = await db.all(`SELECT * FROM Usuarios WHERE email = ?`, [
-      email,
-    ]); // Busca o usuário pelo email
+    const search = await db.all(`SELECT * FROM Usuarios WHERE email = ?`, [email]); // Busca o usuário pelo email
 
-    if (search.length > 0) {
+    if(search.length > 0){
       const user = search[0];
 
       const senhaValida = await bcrypt.compare(senha, user.senha);
 
       // Verifica se a senha está correta e cria o token de acesso
-      if (user.email === email && senhaValida) {
+      if(user.email === email && senhaValida){
         const token = await CreateToken(user); // Gera o token de acesso
+    
+        return NextResponse.json({ message: "Usuario Autenticado!", token:token, cargoUser: user.cargo, user: user.nome, id_usuario: user.id_usuario }, { status: 200 });
 
-        return NextResponse.json(
-          {
-            message: "Usuario Autenticado!",
-            token: token,
-            cargoUser: user.cargo,
-            user: user.nome,
-            id_usuario: user.id_usuario,
-          },
-          { status: 200 }
-        );
       } else {
-        return NextResponse.json(
-          { message: "Credenciais inválidas!" },
-          { status: 401 }
-        );
+        return NextResponse.json({ message: "Credenciais inválidas!" }, { status:401 });
       }
+
     } else {
-      return NextResponse.json(
-        { message: "Usuario não encontrado!" },
-        { status: 404 }
-      );
+        return NextResponse.json({ message: "Usuario não encontrado!" }, { status: 404 });
     }
+   
   } catch (error) {
     console.error("Erro ao autenticar: ", error); // Se ocorrer algum erro fora dos casos acima, ele será exibido no console
-    return NextResponse.json(
-      { message: "Erro interno do servidor" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Erro interno do servidor" }, { status: 500 });
   }
 }

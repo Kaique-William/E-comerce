@@ -11,7 +11,7 @@ export default async function Home() {
     <main className="min-h-screen">
       {/* Container responsivo com padding ajustável */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
+        
         {/* Seção de Promoções com responsividade */}
         <section className="mb-8 lg:mb-12">
           <div className="max-w-7xl mx-auto">

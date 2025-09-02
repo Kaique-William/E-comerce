@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { X, Menu } from "lucide-react";
-import { useFiltro } from "@/contexts/FiltroContext";
 
 interface tipo {
     [categoria: string]: string[];
@@ -10,66 +9,22 @@ interface tipo {
 export default function BotaoCategoria() {
     const categorias = ["masculino", "feminino", "unisex"];
     const tipos: tipo = {
-        masculino: [
-            "Camisa",
-            "Calça",
-            "Bermuda",
-            "Blusa",
-            "Jaqueta",
-            "Shorts",
-            "Calçados",
-            "Intimo",
-            "Outros",
-        ],
-        feminino: [
-            "Camisa",
-            "Calça",
-            "Vestido",
-            "Blusa",
-            "Jaqueta",
-            "Shorts",
-            "Saia",
-            "Calçados",
-            "Intimo",
-            "Outros",
-        ],
-        unisex: [
-            "Camisa",
-            "Calça",
-            "Calçados",
-            "Jaqueta",
-            "Blusa",
-            "Shorts",
-            "Intimo",
-            "Outros",
-        ],
+        masculino: ["Camisa", "Calça", "Calçados", "Vestido", "Saia", "Bermuda", "Jaqueta", "Blusa", "Shorts", "Intimo", "Outros"],
+        feminino: ["Vestido", "Saia", "Blusa", "Calça", "Calçados", "Jaqueta", "Shorts", "Intimo", "Outros"],
+        unisex: ["Camisa", "Calça", "Calçados", "Jaqueta", "Blusa", "Shorts", "Intimo", "Outros"]
     };
 
-    const { categoriaSelecionada, tipoSelecionado, setCategoriaSelecionada, setTipoSelecionado, limparFiltros } = useFiltro();
+    const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
     const [sidebarVisible, setSidebarVisible] = useState(false);
 
-    const handleCategoriaClick = (categoria: string) => {
-        if (categoriaSelecionada === categoria) {
-            setCategoriaSelecionada(null);
-            setTipoSelecionado(null);
-        } else {
-            setCategoriaSelecionada(categoria);
-            setTipoSelecionado(null);
-        }
-    };
 
-    const handleTipoClick = (tipo: string) => {
-        setTipoSelecionado(tipo);
+    const handleCategoriaClick = (categoria: string) => {
+        setCategoriaSelecionada(categoria === categoriaSelecionada ? null : categoria);
     };
 
     const toggleCategoriaSidebar = () => {
         setSidebarVisible(!sidebarVisible);
     };
-
-    const handleLimparFiltros = () => {
-        limparFiltros();
-    };
-
     return (
         <>
             {/* Botão categorias */}
@@ -92,22 +47,11 @@ export default function BotaoCategoria() {
                     </button>
                 </div>
 
-                {/* Botão para limpar filtros */}
-                {(categoriaSelecionada || tipoSelecionado) && (
-                    <button
-                        onClick={handleLimparFiltros}
-                        className="w-full mb-4 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm transition-colors"
-                    >
-                        Limpar Filtros
-                    </button>
-                )}
-
                 <ul>
                     {categorias.map((categoria) => (
                         <li key={categoria} className="mb-2">
                             <div
-                                className={`cursor-pointer font-semibold hover:underline ${categoriaSelecionada === categoria ? "text-blue-400" : ""
-                                    }`}
+                                className="cursor-pointer font-semibold hover:underline"
                                 onClick={() => handleCategoriaClick(categoria)}
                             >
                                 {categoria}
@@ -116,12 +60,7 @@ export default function BotaoCategoria() {
                             {categoriaSelecionada === categoria && (
                                 <ul className="ml-4 mt-2 space-y-1">
                                     {tipos[categoria].map((tipo) => (
-                                        <li
-                                            key={tipo}
-                                            className={`cursor-pointer hover:text-gray-300 ${tipoSelecionado === tipo ? "text-blue-400" : ""
-                                                }`}
-                                            onClick={() => handleTipoClick(tipo)}
-                                        >
+                                        <li key={tipo} className="cursor-pointer hover:text-gray-300">
                                             {tipo}
                                         </li>
                                     ))}

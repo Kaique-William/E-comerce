@@ -37,7 +37,14 @@ export default function Login() {
       const idValue = typeof data.id_usuario === "string" ? data.id_usuario : JSON.parse(data.id_usuario);
       Cookies.set("id", idValue, { expires: 0.5, sameSite: "lax" });
 
-      window.location.reload()
+      // Redireciona conforme cargo
+      if (data.cargoUser === "Cliente") {
+        router.push("/"); 
+        window.location.reload();
+      } else if (data.cargoUser === "ADM") {
+        router.push("/vendas"); 
+        window.location.reload();
+      }
     } else {
       setMensagem(data.message || "Erro ao fazer login");
     }
