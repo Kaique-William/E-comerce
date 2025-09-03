@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { useFiltro } from "@/contexts/FiltroContext";
@@ -14,9 +14,8 @@ interface Produto {
     descricao?: string;
 }
 
-export default function ListaProdutos() {
+export default function TodosItens() {
     const [produtos, setProdutos] = useState<Produto[]>([]);
-
     const [carregando, setCarregando] = useState(true);
     const { categoriaSelecionada, tipoSelecionado, termoBusca, limparFiltros } = useFiltro();
 
@@ -45,13 +44,42 @@ export default function ListaProdutos() {
         fetchData();
     }, [categoriaSelecionada, tipoSelecionado, termoBusca]);
 
-    // console.log(produtos);
-
     // Verificar se há filtros ativos
     const temFiltrosAtivos = categoriaSelecionada || tipoSelecionado || termoBusca.trim();
 
     return (
         <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Header da página */}
+            <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                    <h1 className="text-3xl font-bold text-gray-900">Todos os Produtos</h1>
+                    <Link
+                        href="/"
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow transition-all duration-200"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                            />
+                        </svg>
+                        Voltar
+                    </Link>
+                </div>
+
+                <p className="text-gray-600">
+                    {carregando ? "Carregando..." : `${produtos.length} produto(s) encontrado(s)`}
+                </p>
+            </div>
+
             {/* Seção de filtros ativos */}
             {temFiltrosAtivos && (
                 <div className="mb-6 p-4 bg-gray-100 rounded-lg">
@@ -82,13 +110,14 @@ export default function ListaProdutos() {
                 </div>
             )}
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+            {/* Grid de produtos */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                 {carregando ? (
-                    <div className="text-center py-12">
+                    <div className="col-span-full text-center py-12">
                         <p className="text-gray-500 text-lg">Carregando produtos...</p>
                     </div>
                 ) : produtos.length === 0 ? (
-                    <div className="text-center py-12">
+                    <div className="col-span-full text-center py-12">
                         <p className="text-gray-500 text-lg">
                             {temFiltrosAtivos
                                 ? "Nenhum produto encontrado com os filtros aplicados"
@@ -117,13 +146,18 @@ export default function ListaProdutos() {
                             <p className="text-base sm:text-lg text-green-600 font-bold mb-1">
                                 R$ {produto.valor.toFixed(2)}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 mb-2">
                                 Quantidade: {produto.quantidade}
                             </p>
+                            {produto.categoria && (
+                                <p className="text-xs text-gray-500">
+                                    {produto.categoria} {produto.tipo && `• ${produto.tipo}`}
+                                </p>
+                            )}
                         </Link>
                     ))
                 )}
             </div>
         </main>
-    )
+    );
 }

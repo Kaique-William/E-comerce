@@ -68,6 +68,7 @@ export default function BotaoCategoria() {
 
   const toggleCategoriaSidebar = () => {
     setSidebarVisible(!sidebarVisible);
+    
   };
   return (
     <>

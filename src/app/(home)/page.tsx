@@ -1,4 +1,4 @@
-import { openDb } from "../../db/confgDB.js";
+import { openDb } from "@/db/confgDB.js";
 import Promocoes from "@/components/home/promocoes";
 import ListaProdutos from "@/components/home/listaProdutos";
 import Link from "next/link";
@@ -27,7 +27,7 @@ export default async function Home() {
                 Novos Produtos
               </h1>
 
-              <Link href="/produtos" className="text-sm text-gray-500 hover:text-gray-700">Ver todos os produtos</Link>
+              <Link href="/itens" className="text-sm text-gray-500 hover:text-gray-700">Ver todos os itens</Link>
             </div>
             <ListaProdutos />
           </div>

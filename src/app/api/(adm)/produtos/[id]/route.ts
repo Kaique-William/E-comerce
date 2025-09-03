@@ -1,4 +1,4 @@
-import { openDb } from "../../../../../db/confgDB";
+import { openDb } from "@/db/confgDB";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -6,12 +6,14 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const db = await openDb();
+  console.log(params.id);
+  
   try {
     const produto = await db.get(
       `SELECT id_produto, nome, valor, quantidade, quantidade_minima,
               data_ultima_remeca, quantidade_ultima_remeca, categoria, tipo,
               color, marca, tamanho, descricao
-       FROM Estoque WHERE id_produto = ?`,
+       FROM Produtos WHERE id_produto = ?`,
       [params.id]
     );
 
