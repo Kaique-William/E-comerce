@@ -47,14 +47,14 @@ export function middleware(req: NextRequest) {
     }
   
     // Verifica se rota é de Cliente
-    if (privateRoutesCliente.includes(path as any) && cargoUser !== "Cliente") {
+    if (privateRoutesCliente.includes(path as "/carrinho" | "/compras" | "/conta_cliente") && cargoUser !== "Cliente") {
         const redirectUrl = req.nextUrl.clone()
         redirectUrl.pathname = "/vendas"
         return NextResponse.redirect(redirectUrl)
     }
 
     // Verifica se rota é de ADM
-    if (privateRoutesADM.includes(path as any) && cargoUser !== "ADM") {
+    if (privateRoutesADM.includes(path as "/promocoes" | "/produtos" | "/vendas" | "/historico_vendas" | "/historico_compras" | "/fatura_despe") && cargoUser !== "ADM") {
         const redirectUrl = req.nextUrl.clone()
         redirectUrl.pathname = "/"
         return NextResponse.redirect(redirectUrl)

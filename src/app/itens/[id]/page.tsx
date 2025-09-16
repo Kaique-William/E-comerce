@@ -266,9 +266,6 @@ export default function DetalhesProduto() {
                         >
                             {produto.quantidade > 0 ? 'Adicionar ao Carrinho' : 'Indisponível'}
                         </button>
-                        <button className="px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-lg transition-all duration-200">
-                            Favoritar
-                        </button>
                     </div>
                 </div>
             </div>
